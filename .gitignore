@@ -1,0 +1,12 @@
+# Compilation results
+*.o
+
+# Build directory
+build
+
+# Tags files
+.etags
+
+# Emacs
+*~
+\#*\#
