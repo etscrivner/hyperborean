@@ -6,7 +6,7 @@ default: all
 # Pick one of:
 #   linux
 #   osx
-# TODO: windows
+#   windows
 
 UNAME=$(shell uname)
 ifeq ($(UNAME),Darwin)
@@ -17,8 +17,10 @@ else ifeq ($(UNAME),FreeBSD)
   OS=bsd
 else ifeq ($(UNAME),OpenBSD)
   OS=bsd
+else ifneq (,$(findstring MINGW32_NT,$(UNAME)))
+  OS=win
 else
-  $(error unknown unix)
+  $(error unknown os $(UNAME))
 endif
 
 # Build directory
@@ -64,8 +66,12 @@ HYPERBOREAN_OFILES=src/Application.o
 # External dependencies
 #
 
-LIBS=-ldl
-LIBLUAJIT=outside/$(LUAJIT_VER)/src/libluajit.a
+ifeq ($(OS),win)
+  LIBLUAJIT=outside/$(LUAJIT_VER)/src/lua51.dll
+else
+  LIBS=-ldl
+  LIBLUAJIT=outside/$(LUAJIT_VER)/src/libluajit.a
+endif
 
 ifeq ($(OS),osx)
   # Additional flags required by LuaJIT to correctly link against 64-bit OSX app.
@@ -79,6 +85,10 @@ endif
 all: hyperborean
 
 hyperborean: $(BUILD)/hyperborean
+ifeq ($(OS),win)
+	@echo "    COPY   $(LIBLUAJIT) -> ./build"
+	@cp $(LIBLUAJIT) ./build
+endif
 
 $(BUILD)/hyperborean: $(HYPERBOREAN_OFILES) $(LIBLUAJIT)
 	@echo "    BUILD  $(BUILD)/hyperborean"
