@@ -1,5 +1,7 @@
 # Compilation results
 *.o
+*.so
+*.a
 
 # Build directory
 build

@@ -67,6 +67,12 @@ HYPERBOREAN_OFILES=src/Application.o
 LIBS=-ldl
 LIBLUAJIT=outside/$(LUAJIT_VER)/src/libluajit.a
 
+ifeq ($(OS),osx)
+  # Additional flags required by LuaJIT to correctly link against 64-bit OSX app.
+  LIBS+=-pagezero_size 10000 \
+        -image_base 100000000
+endif
+
 # Make targets
 #
 
