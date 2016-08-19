@@ -110,5 +110,6 @@ etags:
 
 clean:
 	$(RM) $(HYPERBOREAN_OFILES) $(BUILD)/hyperborean $(TAGS)
+	$(MAKE) clean -C outside/$(LUAJIT_VER)/src
 
 .PHONY: clean
