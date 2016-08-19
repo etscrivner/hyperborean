@@ -4,9 +4,13 @@
 # Build directory
 build
 
+# CMake experiments
+CMakeLists.txt
+
 # Tags files
 .etags
 
 # Emacs
 *~
 \#*\#
+*.el
