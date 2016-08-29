@@ -48,7 +48,8 @@ endif
 CXXFLAGS=-std=c++11 \
          -I$(INCLUDE) \
 	 -Ioutside/$(LUAJIT_VER)/src \
-	 -Ioutside/$(CATCH_VER)
+	 -Ioutside/$(CATCH_VER) \
+	 -Loutside/$(LUAJIT_VER)/src
 
 CXXWFLAGS=-Wall \
 	  -Wextra \
@@ -81,8 +82,8 @@ HYPERBOREAN_OFILES=$(HYPERBOREAN_ROOT_FILES) \
 ifeq ($(OS),win)
   LIBLUAJIT=outside/$(LUAJIT_VER)/src/lua51.dll
 else
-  LIBS=-ldl
-  LIBLUAJIT=outside/$(LUAJIT_VER)/src/libluajit.so
+  LIBS=-ldl -lluajit
+  LIBLUAJIT=outside/$(LUAJIT_VER)/src/libluajit.a
 endif
 
 ifeq ($(OS),osx)
@@ -106,12 +107,12 @@ tests: CXXFLAGS+=-DUNITTESTS
 tests: clean $(HYPERBOREAN_OFILES) $(HYPERBOREAN_TEST_FILES) $(LIBLUAJIT)
 	@echo "    BUILD  $(BUILD)/test_hyperborean"
 	@mkdir -p $(BUILD)
-	@$(CXX) $(CXXFLAGS) -o $(BUILD)/test_hyperborean $(HYPERBOREAN_OFILES) $(HYPERBOREAN_TEST_FILES) $(LIBLUAJIT) $(LIBS)
+	@$(CXX) $(CXXFLAGS) -o $(BUILD)/test_hyperborean $(HYPERBOREAN_OFILES) $(HYPERBOREAN_TEST_FILES) $(LIBS)
 
 $(BUILD)/hyperborean: $(HYPERBOREAN_OFILES) $(LIBLUAJIT)
 	@echo "    BUILD  $(BUILD)/hyperborean"
 	@mkdir -p $(BUILD)
-	@$(CXX) $(CXXFLAGS) -o $(BUILD)/hyperborean $(HYPERBOREAN_OFILES) $(LIBLUAJIT) $(LIBS)
+	@$(CXX) $(CXXFLAGS) -o $(BUILD)/hyperborean $(HYPERBOREAN_OFILES) $(LIBS)
 
 %.o: %.cpp
 	@echo "    CXX    $@"
