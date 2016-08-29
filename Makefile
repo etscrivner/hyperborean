@@ -33,6 +33,7 @@ INCLUDE=src
 #
 
 LUAJIT_VER=luajit-2.0.4
+CATCH_VER=catch-1.5.6
 
 # Compiler selection and flags
 #
@@ -46,7 +47,8 @@ endif
 
 CXXFLAGS=-std=c++11 \
          -I$(INCLUDE) \
-	 -Ioutside/$(LUAJIT_VER)/src
+	 -Ioutside/$(LUAJIT_VER)/src \
+	 -Ioutside/$(CATCH_VER)
 
 CXXWFLAGS=-Wall \
 	  -Wextra \
@@ -61,7 +63,17 @@ TAGS=.tags \
 # Files to be made
 #
 
-HYPERBOREAN_OFILES=src/Application.o
+HYPERBOREAN_ROOT_FILES=src/Main.o \
+	               src/Application.o \
+		       src/Log.o
+
+HYPERBOREAN_SCRIPTING_FILES=src/Scripting/Environment.o
+
+HYPERBOREAN_TEST_FILES=tests/Main.o \
+	               tests/Unit/Scripting/TestEnvironment.o
+
+HYPERBOREAN_OFILES=$(HYPERBOREAN_ROOT_FILES) \
+	           $(HYPERBOREAN_SCRIPTING_FILES)
 
 # External dependencies
 #
@@ -70,7 +82,7 @@ ifeq ($(OS),win)
   LIBLUAJIT=outside/$(LUAJIT_VER)/src/lua51.dll
 else
   LIBS=-ldl
-  LIBLUAJIT=outside/$(LUAJIT_VER)/src/libluajit.a
+  LIBLUAJIT=outside/$(LUAJIT_VER)/src/libluajit.so
 endif
 
 ifeq ($(OS),osx)
@@ -90,6 +102,12 @@ ifeq ($(OS),win)
 	@cp $(LIBLUAJIT) ./build
 endif
 
+tests: CXXFLAGS+=-DUNITTESTS
+tests: clean $(HYPERBOREAN_OFILES) $(HYPERBOREAN_TEST_FILES) $(LIBLUAJIT)
+	@echo "    BUILD  $(BUILD)/test_hyperborean"
+	@mkdir -p $(BUILD)
+	@$(CXX) $(CXXFLAGS) -o $(BUILD)/test_hyperborean $(HYPERBOREAN_OFILES) $(HYPERBOREAN_TEST_FILES) $(LIBLUAJIT) $(LIBS)
+
 $(BUILD)/hyperborean: $(HYPERBOREAN_OFILES) $(LIBLUAJIT)
 	@echo "    BUILD  $(BUILD)/hyperborean"
 	@mkdir -p $(BUILD)
@@ -106,10 +124,21 @@ $(LIBLUAJIT):
 tags: etags
 
 etags:
-	@etags -f .etags $$(find . -name '*.cpp' -or -name '*.hpp') || true
+	etags -f .etags $$(find ./src -name '*.cpp' -or -name '*.hpp') || true
 
+# Only clean out project-related files
+#
 clean:
-	$(RM) $(HYPERBOREAN_OFILES) $(BUILD)/hyperborean $(TAGS)
+	@echo "    CLEAN"
+	@$(RM) $(HYPERBOREAN_OFILES) \
+	       $(HYPERBOREAN_TEST_FILES) \
+	       $(BUILD)/hyperborean \
+	       $(BUILD)/test_hyperborean \
+	       $(TAGS)
+
+# Clean out project and dependency-related files
+#
+full-clean: clean
 	$(MAKE) clean -C outside/$(LUAJIT_VER)/src
 
-.PHONY: clean
+.PHONY: clean full-clean
