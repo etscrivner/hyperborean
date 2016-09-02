@@ -63,8 +63,8 @@ TAGS=.tags \
 # Files to be made
 #
 
-HYPERBOREAN_ROOT_FILES=src/Main.o \
-	               src/Application.o \
+HYPERBOREAN_MAIN=src/Main.o
+HYPERBOREAN_ROOT_FILES=src/Application.o \
 		       src/Log.o
 
 HYPERBOREAN_SCRIPTING_FILES=src/Scripting/Environment.o
@@ -103,15 +103,15 @@ ifeq ($(OS),win)
 endif
 
 tests: CXXFLAGS+=-DUNITTESTS
-tests: clean $(HYPERBOREAN_OFILES) $(HYPERBOREAN_TEST_FILES) $(LIBLUAJIT)
+tests: clean $(HYPERBOREAN_OFILES) $(HYPERBOREAN_TEST_MAIN) $(HYPERBOREAN_TEST_FILES) $(LIBLUAJIT)
 	@echo "    BUILD  $(BUILD)/test_hyperborean"
 	@mkdir -p $(BUILD)
 	@$(CXX) $(CXXFLAGS) -o $(BUILD)/test_hyperborean $(HYPERBOREAN_OFILES) $(HYPERBOREAN_TEST_FILES) $(LIBLUAJIT) $(LIBS)
 
-$(BUILD)/hyperborean: $(HYPERBOREAN_OFILES) $(LIBLUAJIT)
+$(BUILD)/hyperborean: $(HYPERBOREAN_MAIN) $(HYPERBOREAN_OFILES) $(LIBLUAJIT)
 	@echo "    BUILD  $(BUILD)/hyperborean"
 	@mkdir -p $(BUILD)
-	@$(CXX) $(CXXFLAGS) -o $(BUILD)/hyperborean $(HYPERBOREAN_OFILES) $(LIBLUAJIT) $(LIBS)
+	@$(CXX) $(CXXFLAGS) -o $(BUILD)/hyperborean $(HYPERBOREAN_MAIN) $(HYPERBOREAN_OFILES) $(LIBLUAJIT) $(LIBS)
 
 %.o: %.cpp
 	@echo "    CXX    $@"
@@ -130,7 +130,8 @@ etags:
 #
 clean:
 	@echo "    CLEAN"
-	@$(RM) $(HYPERBOREAN_OFILES) \
+	@$(RM) $(HYPERBOREAN_MAIN) \
+	       $(HYPERBOREAN_OFILES) \
 	       $(HYPERBOREAN_TEST_FILES) \
 	       $(BUILD)/hyperborean \
 	       $(BUILD)/test_hyperborean \
