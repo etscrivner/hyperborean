@@ -25,7 +25,7 @@ TEST_CASE("EventChannel::Register", "[events]")
 
   SECTION("successfully registers listener")
   {
-    std::array<MockEventListener, 2> listeners;
+    MockEventListener listeners[2];
     REQUIRE_NOTHROW(channel.Register(&listeners[0]));
     REQUIRE_NOTHROW(channel.Register(&listeners[1]));
   }
@@ -37,7 +37,7 @@ TEST_CASE("EventChannel::SendEvent", "[events]")
 {
   Hyperborean::Events::EventChannel channel;
 
-  std::array<MockEventListener, 2> listeners;
+  MockEventListener listeners[2];
   REQUIRE_NOTHROW(channel.Register(&listeners[0]));
   REQUIRE_NOTHROW(channel.Register(&listeners[1]));
 
