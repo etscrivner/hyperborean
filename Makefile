@@ -34,6 +34,9 @@ INCLUDE=src
 
 LUAJIT_VER=luajit-2.0.4
 CATCH_VER=catch-1.5.6
+SDL2_VER=SDL2-2.0.5
+SFML_VER=SFML-2.4.2
+ALLEGRO_VER=allegro-5.2.2.0
 
 # Compiler selection and flags
 #
@@ -48,7 +51,7 @@ endif
 CXXFLAGS=-std=c++11 \
          -I$(INCLUDE) \
 	 -Ioutside/$(LUAJIT_VER)/src \
-	 -Ioutside/$(CATCH_VER)
+	 -Ioutside/$(CATCH_VER) \
 
 CXXWFLAGS=-Wall \
 	  -Wextra \
@@ -65,19 +68,26 @@ TAGS=.tags \
 
 HYPERBOREAN_MAIN=src/Main.o
 HYPERBOREAN_ROOT_FILES=src/Application.o \
-		       src/Log.o
+		       src/Log.o \
+		       src/Settings.o
 
 HYPERBOREAN_SCRIPTING_FILES=src/Scripting/Environment.o
 
+HYPERBOREAN_EVENTS_FILES=src/Events/EventChannel.o \
+			 src/Events/EventListener.o
+
 HYPERBOREAN_TEST_FILES=tests/Main.o \
-	               tests/Unit/Scripting/TestEnvironment.o
+	               tests/Unit/Scripting/TestEnvironment.o \
+		       tests/Unit/Events/TestEventChannel.o
 
 HYPERBOREAN_OFILES=$(HYPERBOREAN_ROOT_FILES) \
-	           $(HYPERBOREAN_SCRIPTING_FILES)
+	           $(HYPERBOREAN_SCRIPTING_FILES) \
+		   $(HYPERBOREAN_EVENTS_FILES)
 
 # External dependencies
 #
 
+# LuaJIT
 ifeq ($(OS),win)
   LIBLUAJIT=outside/$(LUAJIT_VER)/src/lua51.dll
 else
@@ -90,6 +100,17 @@ ifeq ($(OS),osx)
   LIBS+=-pagezero_size 10000 \
         -image_base 100000000
 endif
+
+# SDL2
+LIBSDL2=outside/$(SDL2_VER)/build/libSDL2main.a
+#LIBS+=-pthread -lsndio -lrt -lasound -lSDL2 -lSDL2main -lGL -lGLU -lglut
+
+# SFML
+#LIBS+=-lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio
+LIBSFML=outside/$(SFML_VER)/lib/libsfml-audio.so
+
+# Allegro
+# LIBS+=-lallegro -lallegro_main -lallegro_image -lallegro_ttf -lallegro_font -lallegro_color
 
 # Make targets
 #
@@ -121,6 +142,18 @@ $(LIBLUAJIT):
 	@echo "    LIB    $(LUAJIT_VER)"
 	$(MAKE) -C outside/$(LUAJIT_VER)/src
 
+$(LIBSDL2):
+	@echo "    LIB    $(SDL2_VER)"
+	cd outside && unzip $(SDL2_VER).zip
+	cd outside/$(SDL2_VER) && ./configure
+	$(MAKE) -C outside/$(SDL2_VER)
+
+$(LIBSFML):
+	@echo "    LIB    $(SFML_VER)"
+	cd outside && unzip $(SFML_VER).zip
+	cd outside/$(SFML_VER) && cmake .
+	$(MAKE) -C outside/$(SFML_VER)
+
 tags: etags
 
 etags:
@@ -141,5 +174,6 @@ clean:
 #
 full-clean: clean
 	$(MAKE) clean -C outside/$(LUAJIT_VER)/src
+	$(RM) outside/$(SDL2_VER)
 
 .PHONY: clean full-clean
