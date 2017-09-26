@@ -48,7 +48,7 @@ else
   CXX=c++
 endif
 
-CXXFLAGS=-std=c++11 \
+CXXFLAGS=-std=c++1z \
          -I$(INCLUDE) \
 	 -Ioutside/$(LUAJIT_VER)/src \
 	 -Ioutside/$(CATCH_VER) \
@@ -69,7 +69,8 @@ TAGS=.tags \
 HYPERBOREAN_MAIN=src/Main.o
 HYPERBOREAN_ROOT_FILES=src/Application.o \
 		       src/Log.o \
-		       src/Settings.o
+		       src/Settings.o \
+		       src/SettingsParser.o
 
 HYPERBOREAN_SCRIPTING_FILES=src/Scripting/Environment.o
 

@@ -160,3 +160,37 @@ bool Hyperborean::Scripting::Environment::AddModule(
 
   return true;
 }
+
+///////////////////////////////////////////////////////////////////////////////
+
+int Hyperborean::Scripting::Environment::GetInt(
+  const char* key, const int defaultValue)
+{
+  lua_getfield(_luaState, LUA_GLOBALSINDEX, key);
+  int result = luaL_optint(_luaState, -1, defaultValue);
+  lua_pop(_luaState, 1);
+  return result;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+bool Hyperborean::Scripting::Environment::GetBool(
+  const char* key, const bool defaultValue)
+{
+  lua_getfield(_luaState, LUA_GLOBALSINDEX, key);
+  if (lua_isboolean(_luaState, -1)) {
+    return lua_toboolean(_luaState, -1);
+  }
+  return defaultValue;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+std::string Hyperborean::Scripting::Environment::GetString(
+  const char* key, const std::string& defaultValue)
+{
+  lua_getfield(_luaState, LUA_GLOBALSINDEX, key);
+  const char* result = luaL_optlstring(_luaState, -1, defaultValue.c_str(), NULL);
+  lua_pop(_luaState, 1);
+  return result;
+}

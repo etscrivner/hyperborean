@@ -110,6 +110,13 @@ namespace Hyperborean {
       // otherwise.
       bool AddModule(const std::string& moduleName,
                      lua_CFunction loadModuleFunc);
+
+      /////////////////////////////////////////////////////////////////////////
+      // Variable accessors
+
+      int GetInt(const char* key, const int defaultValue);
+      bool GetBool(const char* key, const bool defaultValue);
+      std::string GetString(const char* key, const std::string& defaultValue);
     private:
       /// The Lua execution environment global state
       lua_State* _luaState;

@@ -1,6 +1,7 @@
 #include "Application.hpp"
 #include "Log.hpp"
 #include "Settings.hpp"
+#include "SettingsParser.hpp"
 #include "Scripting/Environment.hpp"
 
 #include <iostream>
@@ -32,7 +33,8 @@ int Hyperborean::Application::Execute(std::string applicationName,
     env.Execute("main");
   }
 
-  Settings settings;
+  SettingsParser settingsParser;
+  Settings settings = settingsParser.FromFile("settings.lua");
   std::cout << settings << std::endl;
 
   return EXIT_SUCCESS;
