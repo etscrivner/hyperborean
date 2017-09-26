@@ -1,0 +1,41 @@
+# Events
+
+The event system is an attempt to decouple various systems of the game as well
+as to decouple games from specific platforms by abstracting things that happen
+into events.
+
+## Example
+
+The first layer of abstraction is represented by the Platform to Game linkage
+in the figure below. For each platform, platform-specific code is provided to
+dispatch a handful of input events that are received by the game. The game then
+maintains a stack of game states. Only the event channel of the top game state
+receives system events.
+
++---------------+
+|   Platform    |
++---------------+
+       ||
+       \/
++---------------+     +--------------+
+|      Game     | =>  |     Menu     |   (Priority Queue)
++---------------+     +--------------+ 
+                      |   World Map  |
+                      +--------------+
+                      | Title Screen |
+                      +--------------+
+
+This can be abstracted further, with listeners specifically provided to convert
+lower level events into higher level events, for their listeners. For example,
+the menu state could be its own event channel and simply process game events to
+menu events.
+
++------------+--------------+
+| Game Event |  Menu Event  |
++------------+--------------+
+| KEY_ACTION | MENU_CHOOSE  |
+| KEY_ESCAPE | MENU_EXIT    |
+| KEY_REVERT | MENU_BACK    |
++------------+--------------+
+
+A wrapper could also generate multiple events from
