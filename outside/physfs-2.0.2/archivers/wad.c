@@ -247,6 +247,7 @@ static int wad_load_entries(const char *name, int forWriting, WADinfo *info)
     WADentry *entry;
     char lastDirectory[9];
 
+    memset(lastDirectory, 0, sizeof(char) * 9);
     lastDirectory[8] = 0; /* Make sure lastDirectory stays null-terminated. */
 
     BAIL_IF_MACRO(!wad_open(name, forWriting, &fh, &fileCount,&directoryOffset), NULL, 0);
