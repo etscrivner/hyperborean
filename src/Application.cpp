@@ -2,6 +2,7 @@
 #include "Errors.hpp"
 #include "Log.hpp"
 #include "OS.hpp"
+#include "Assets/ManifestParser.hpp"
 #include "Settings.hpp"
 #include "SettingsParser.hpp"
 #include "Scripting/Environment.hpp"
@@ -40,6 +41,9 @@ int Hyperborean::Application::Execute(std::string applicationName,
     SettingsParser settingsParser;
     Settings settings = settingsParser.FromFile("settings.lua");
     std::cout << settings << std::endl;
+
+    Hyperborean::Assets::ManifestParser manifestParser;
+    manifestParser.FromFile(settings.manifestPath);
   } catch(Hyperborean::BaseError& error) {
     HBLOG_ERROR("Exception caught: %s", error.what());
     ShutdownSubsystems();

@@ -1,4 +1,5 @@
 #include "File.hpp"
+#include "Log.hpp"
 
 #include <cstring>
 
@@ -19,9 +20,11 @@ void Hyperborean::OS::File::SetBuffer(
   const char* buffer, const std::size_t& sizeBytes)
 {
   Reset();
-  buffer_ = new char[sizeBytes];
+  // NOTE: Need to add one to factor in null-terminator, otherwise we get junk as it searches to \0
+  // char to terminate at.
+  buffer_ = new char[sizeBytes+1];
   sizeBytes_ = sizeBytes;
-  memcpy(buffer_, buffer, sizeBytes);
+  memcpy(buffer_, buffer, sizeof(char)*sizeBytes+1);
 }
 
 ///////////////////////////////////////////////////////////////////////////////

@@ -1,6 +1,8 @@
 #include "Scripting/Environment.hpp"
 #include "Log.hpp"
 
+#include <map>
+
 static int hello(lua_State*) {
   HBLOG_DEBUG("Hello from Lua");
   return 0;
@@ -194,3 +196,120 @@ std::string Hyperborean::Scripting::Environment::GetString(
   lua_pop(_luaState, 1);
   return result;
 }
+
+///////////////////////////////////////////////////////////////////////////////
+
+void Hyperborean::Scripting::Environment::GetTable(
+  const std::string& tableName)
+{
+  lua_getglobal(_luaState, tableName.c_str());
+
+  if (!lua_istable(_luaState, -1))
+  {
+    throw Hyperborean::Scripting::ParseError(
+      "Expected table named '" + tableName + "'"
+    );
+  }
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+bool Hyperborean::Scripting::Environment::OpenSubTable(
+  const std::string& tableName)
+{
+  lua_pushstring(_luaState, tableName.c_str());
+  lua_rawget(_luaState, -2);
+
+  if (lua_istable(_luaState, -1)) {
+    lua_pushnil(_luaState);
+    return true;
+  }
+
+  return false;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+void Hyperborean::Scripting::Environment::CloseSubTable()
+{
+  lua_pop(_luaState, 1);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+bool Hyperborean::Scripting::Environment::TableHasItems()
+{
+  return (lua_next(_luaState, -2) != 0);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+Hyperborean::Scripting::Environment::TableEntries
+Hyperborean::Scripting::Environment::GetNextTableEntry()
+{
+  const char* entryName = luaL_checkstring(_luaState, -2);
+  if (!entryName)
+  {
+    throw Hyperborean::ConstraintViolationError(
+      "Table contains non-string entry name."
+    );
+  }
+
+  Hyperborean::Scripting::Environment::EntryMap pairs;
+  lua_pushnil(_luaState);
+  while (TableHasItems()) {
+    std::string key = std::string(lua_tostring(_luaState, -2));
+    std::string value = std::string(lua_tostring(_luaState, -1));
+
+    pairs[key] = value;
+
+    lua_pop(_luaState, 1);
+  }
+
+  lua_pop(_luaState, 1);
+
+  TableEntries result(std::string(entryName), pairs);
+  return result;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+// void Hyperborean::Scripting::Environment::ProcessSubTable(
+//   const std::string& tableName)
+// {
+//   // Get the table with the given name
+//   lua_pushstring(_luaState, tableName.c_str());
+//   lua_rawget(_luaState, -2);
+
+//   if (lua_istable(_luaState, -1))
+//   {
+//     // Push nil to ensure key, value are at the expected indices
+//     lua_pushnil(_luaState);
+//     while(lua_next(_luaState, -2) != 0)
+//     {
+//       // Parse the next tabular entry in the table
+//       const char* entryName = luaL_checkstring(_luaState, -2);
+//       if (!entryName)
+//       {
+//         continue;
+//       }
+//       HBLOG_INFO("Entry: %s", entryName);
+
+//       std::map<std::string, std::string> entryValues;
+//       lua_pushnil(_luaState);
+//       while(lua_next(_luaState, -2) != 0)
+//       {
+//         std::string key = std::string(lua_tostring(_luaState, -2));
+//         std::string value = std::string(lua_tostring(_luaState, -1));
+//         HBLOG_INFO("%s = %s", key.c_str(), value.c_str());
+//         entryValues[key] = value;
+//         lua_pop(_luaState, 1);
+//       }
+  
+//       lua_pop(_luaState, 1);
+//     }
+//   }
+
+//   // Pop the table off the stack
+//   lua_pop(_luaState, 1);
+// }

@@ -1,5 +1,6 @@
 #include "OS/File.hpp"
 #include "OS/FileSystem.hpp"
+#include "Log.hpp"
 #include "SettingsParser.hpp"
 #include "Scripting/Environment.hpp"
 

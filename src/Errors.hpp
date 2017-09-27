@@ -8,6 +8,10 @@ namespace Hyperborean {
   class BaseError : public std::runtime_error {
     using std::runtime_error::runtime_error;
   };
+  // Raised whenever a necessary constraint is violated.
+  class ConstraintViolationError : public BaseError {
+    using BaseError::BaseError;
+  };
 }
 
 #endif // HYPERBOREAN_ERRORS_HPP_INCLUDED

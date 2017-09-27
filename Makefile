@@ -34,7 +34,7 @@ INCLUDE=src
 
 LUAJIT_VER=luajit-2.0.4
 CATCH_VER=catch-1.5.6
-PHYSFS_VER=physfs-2.0.2
+PHYSFS_VER=physfs-3.0.0
 SDL2_VER=SDL2-2.0.5
 SFML_VER=SFML-2.4.2
 ALLEGRO_VER=allegro-5.2.2.0
@@ -53,7 +53,7 @@ CXXFLAGS=-std=c++14 \
          -I$(INCLUDE) \
 	 -Ioutside/$(LUAJIT_VER)/src \
 	 -Ioutside/$(CATCH_VER) \
-	 -Ioutside/$(PHYSFS_VER)
+	 -Ioutside/$(PHYSFS_VER)/src
 
 CXXWFLAGS=-Wall \
 	  -Wextra \
@@ -74,6 +74,10 @@ HYPERBOREAN_ROOT_FILES=src/Application.o \
 		       src/Settings.o \
 		       src/SettingsParser.o
 
+HYPERBOREAN_ASSETS_FILES=src/Assets/Asset.o \
+			 src/Assets/Store.o \
+			 src/Assets/ManifestParser.o
+
 HYPERBOREAN_EVENTS_FILES=src/Events/EventChannel.o \
 			 src/Events/EventListener.o
 
@@ -88,6 +92,7 @@ HYPERBOREAN_TEST_FILES=tests/Main.o \
 		       tests/Unit/Events/TestEventChannel.o
 
 HYPERBOREAN_OFILES=$(HYPERBOREAN_ROOT_FILES) \
+		   $(HYPERBOREAN_ASSETS_FILES) \
 		   $(HYPERBOREAN_EVENTS_FILES) \
 		   $(HYPERBOREAN_OS_FILES) \
 	           $(HYPERBOREAN_SCRIPTING_FILES) \
@@ -118,7 +123,8 @@ ifeq ($(OS),macos)
   LIBS+=-framework CoreFoundation \
 	-framework CoreServices \
 	-framework IOKit \
-	-framework ApplicationServices
+	-framework ApplicationServices \
+	-framework Foundation
 endif
 
 # SDL2
