@@ -1,21 +1,23 @@
 #ifndef HYPERBOREAN_SCRIPTING_ENVIRONMENT_HPP_INCLUDED
 #define HYPERBOREAN_SCRIPTING_ENVIRONMENT_HPP_INCLUDED
 
-#include <stdexcept>
 #include <string>
 
 #include <lua.hpp>
+
+#include "Errors.hpp"
 
 namespace Hyperborean {
   namespace Scripting {
     ///////////////////////////////////////////////////////////////////////////
     // Scripting exceptions
-    class ParseError : public std::runtime_error {
-      using std::runtime_error::runtime_error;
+
+    class ParseError : public Hyperborean::BaseError {
+      using Hyperborean::BaseError::BaseError;
     };
 
-    class ExecutionError : public std::runtime_error {
-      using std::runtime_error::runtime_error;
+    class ExecutionError : public Hyperborean::BaseError {
+      using Hyperborean::BaseError::BaseError;
     };
 
     ///////////////////////////////////////////////////////////////////////////

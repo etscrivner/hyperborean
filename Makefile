@@ -5,12 +5,12 @@ default: all
 
 # Pick one of:
 #   linux
-#   osx
+#   macos
 #   windows
 
 UNAME=$(shell uname)
 ifeq ($(UNAME),Darwin)
-  OS=osx
+  OS=macos
 else ifeq ($(UNAME),Linux)
   OS=linux
 else ifeq ($(UNAME),FreeBSD)
@@ -34,6 +34,7 @@ INCLUDE=src
 
 LUAJIT_VER=luajit-2.0.4
 CATCH_VER=catch-1.5.6
+PHYSFS_VER=physfs-2.0.2
 SDL2_VER=SDL2-2.0.5
 SFML_VER=SFML-2.4.2
 ALLEGRO_VER=allegro-5.2.2.0
@@ -48,10 +49,11 @@ else
   CXX=c++
 endif
 
-CXXFLAGS=-std=c++1z \
+CXXFLAGS=-std=c++14 \
          -I$(INCLUDE) \
 	 -Ioutside/$(LUAJIT_VER)/src \
 	 -Ioutside/$(CATCH_VER) \
+	 -Ioutside/$(PHYSFS_VER)
 
 CXXWFLAGS=-Wall \
 	  -Wextra \
@@ -72,18 +74,23 @@ HYPERBOREAN_ROOT_FILES=src/Application.o \
 		       src/Settings.o \
 		       src/SettingsParser.o
 
-HYPERBOREAN_SCRIPTING_FILES=src/Scripting/Environment.o
-
 HYPERBOREAN_EVENTS_FILES=src/Events/EventChannel.o \
 			 src/Events/EventListener.o
+
+HYPERBOREAN_OS_FILES=src/OS.o \
+		     src/OS/File.o \
+		     src/OS/FileSystem.o
+
+HYPERBOREAN_SCRIPTING_FILES=src/Scripting/Environment.o
 
 HYPERBOREAN_TEST_FILES=tests/Main.o \
 	               tests/Unit/Scripting/TestEnvironment.o \
 		       tests/Unit/Events/TestEventChannel.o
 
 HYPERBOREAN_OFILES=$(HYPERBOREAN_ROOT_FILES) \
+		   $(HYPERBOREAN_EVENTS_FILES) \
+		   $(HYPERBOREAN_OS_FILES) \
 	           $(HYPERBOREAN_SCRIPTING_FILES) \
-		   $(HYPERBOREAN_EVENTS_FILES)
 
 # External dependencies
 #
@@ -96,10 +103,22 @@ else
   LIBLUAJIT=outside/$(LUAJIT_VER)/src/libluajit.a
 endif
 
-ifeq ($(OS),osx)
-  # Additional flags required by LuaJIT to correctly link against 64-bit OSX app.
+ifeq ($(OS),macos)
+  # Additional flags required by LuaJIT to correctly link against 64-bit macOS app.
   LIBS+=-pagezero_size 10000 \
         -image_base 100000000
+endif
+
+# PhysFS
+LIBS+=-lz
+LIBPHYSFS=outside/$(PHYSFS_VER)/libphysfs.a
+
+ifeq ($(OS),macos)
+  # Additional frameworks required for PhysFS on macOS
+  LIBS+=-framework CoreFoundation \
+	-framework CoreServices \
+	-framework IOKit \
+	-framework ApplicationServices
 endif
 
 # SDL2
@@ -125,15 +144,15 @@ ifeq ($(OS),win)
 endif
 
 tests: CXXFLAGS+=-DUNITTESTS
-tests: clean $(HYPERBOREAN_OFILES) $(HYPERBOREAN_TEST_MAIN) $(HYPERBOREAN_TEST_FILES) $(LIBLUAJIT)
+tests: clean $(HYPERBOREAN_OFILES) $(HYPERBOREAN_TEST_MAIN) $(HYPERBOREAN_TEST_FILES) $(LIBLUAJIT) $(LIBPHYSFS)
 	@echo "    BUILD  $(BUILD)/test_hyperborean"
 	@mkdir -p $(BUILD)
-	@$(CXX) $(CXXFLAGS) -o $(BUILD)/test_hyperborean $(HYPERBOREAN_OFILES) $(HYPERBOREAN_TEST_FILES) $(LIBLUAJIT) $(LIBS)
+	@$(CXX) $(CXXFLAGS) -o $(BUILD)/test_hyperborean $(HYPERBOREAN_OFILES) $(HYPERBOREAN_TEST_FILES) $(LIBLUAJIT) $(LIBPHYSFS) $(LIBS)
 
-$(BUILD)/hyperborean: $(HYPERBOREAN_MAIN) $(HYPERBOREAN_OFILES) $(LIBLUAJIT)
+$(BUILD)/hyperborean: $(HYPERBOREAN_MAIN) $(HYPERBOREAN_OFILES) $(LIBLUAJIT) $(LIBPHYSFS)
 	@echo "    BUILD  $(BUILD)/hyperborean"
 	@mkdir -p $(BUILD)
-	@$(CXX) $(CXXFLAGS) -o $(BUILD)/hyperborean $(HYPERBOREAN_MAIN) $(HYPERBOREAN_OFILES) $(LIBLUAJIT) $(LIBS)
+	@$(CXX) $(CXXFLAGS) -o $(BUILD)/hyperborean $(HYPERBOREAN_MAIN) $(HYPERBOREAN_OFILES) $(LIBLUAJIT) $(LIBPHYSFS) $(LIBS)
 
 %.o: %.cpp
 	@echo "    CXX    $@"
@@ -142,6 +161,11 @@ $(BUILD)/hyperborean: $(HYPERBOREAN_MAIN) $(HYPERBOREAN_OFILES) $(LIBLUAJIT)
 $(LIBLUAJIT):
 	@echo "    LIB    $(LUAJIT_VER)"
 	$(MAKE) -C outside/$(LUAJIT_VER)/src
+
+$(LIBPHYSFS):
+	@echo "    LIB    $(PHYSFS_VER)"
+	cd outside/$(PHYSFS_VER) && cmake .
+	$(MAKE) -C outside/$(PHYSFS_VER)
 
 $(LIBSDL2):
 	@echo "    LIB    $(SDL2_VER)"
@@ -175,6 +199,6 @@ clean:
 #
 full-clean: clean
 	$(MAKE) clean -C outside/$(LUAJIT_VER)/src
-	$(RM) outside/$(SDL2_VER)
+	$(MAKE) clean -C outside/$(PHYSFS_VER)/
 
-.PHONY: clean full-clean
+.PHONY: clean full-clean etags tags
