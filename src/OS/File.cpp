@@ -20,11 +20,10 @@ void Hyperborean::OS::File::SetBuffer(
   const char* buffer, const std::size_t& sizeBytes)
 {
   Reset();
-  // NOTE: Need to add one to factor in null-terminator, otherwise we get junk as it searches to \0
-  // char to terminate at.
-  buffer_ = new char[sizeBytes];
+  buffer_ = new char[sizeBytes+1];
   sizeBytes_ = sizeBytes;
   memcpy(buffer_, buffer, sizeof(char)*sizeBytes);
+  buffer_[sizeBytes-1] = '\0';
 }
 
 ///////////////////////////////////////////////////////////////////////////////
