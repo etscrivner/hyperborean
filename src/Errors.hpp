@@ -16,6 +16,10 @@ namespace Hyperborean {
   class SubsystemInitializationError : public BaseError {
     using BaseError::BaseError;
   };
+  // Raised whenever a resource fails to load.
+  class ResourceError : public BaseError {
+    using BaseError::BaseError;
+  };
 }
 
 #endif // HYPERBOREAN_ERRORS_HPP_INCLUDED

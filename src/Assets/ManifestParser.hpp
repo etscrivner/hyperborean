@@ -5,6 +5,7 @@
 #include "Assets/Store.hpp"
 
 #include <map>
+#include <memory>
 #include <string>
 
 namespace Hyperborean {
@@ -25,21 +26,19 @@ namespace Hyperborean {
     //     ...
     //   }
     // }
-    class ManifestParser {
-    public:
-      /////////////////////////////////////////////////////////////////////////
-      // Constants
-
-      // The name of the global variable containing the manifest table.
-      static const std::string ManifestTableName;
-      // Static mapping of types to names of variables in manifest file
-      static std::map<Asset::AssetType, std::string> TypeToManifestString;
-
+    namespace ManifestParser {
       /////////////////////////////////////////////////////////////////////////
       // Methods
 
-      Store FromFile(const std::string& pathToManifestFile);
-    };
+      // Loads a new manifest store from the given Lua file.
+      //
+      // Parameters:
+      //   pathToManifestFile - Path to the manifest file.
+      //
+      // Returns: Pointer to the newly loaded asset store.
+      Store
+      FromFile(const std::string& pathToManifestFile);
+    }
   }
 }
 

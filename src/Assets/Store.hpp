@@ -4,6 +4,7 @@
 #include "Assets/Asset.hpp"
 
 #include <map>
+#include <memory>
 #include <string>
 
 namespace Hyperborean {
@@ -22,9 +23,10 @@ namespace Hyperborean {
       //   type - The type of asset it is.
       //
       // Return: Pointer to the newly created asset.
-      Asset* Add(const std::string& name,
-                 const std::string& path,
-                 const Asset::AssetType type);
+      Asset*
+      Add(const std::string& name,
+          const std::string& path,
+          const Asset::AssetType type);
 
       // Indicates whether or not an asset with the given name exists.
       //

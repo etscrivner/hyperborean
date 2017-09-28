@@ -7,13 +7,9 @@
 
 #include <fmt/format.h>
 
-const std::string
-Hyperborean::Assets::ManifestParser::ManifestTableName = "manifest";
-
-///////////////////////////////////////////////////////////////////////////////
-
-std::map<Hyperborean::Assets::Asset::AssetType, std::string>
-Hyperborean::Assets::ManifestParser::TypeToManifestString = {
+const std::string ManifestTableName = "manifest";
+const std::map<Hyperborean::Assets::Asset::AssetType, std::string>
+TypeToManifestString = {
   {Hyperborean::Assets::Asset::kScript, "scripts"},
   {Hyperborean::Assets::Asset::kTexture, "textures"}
 };

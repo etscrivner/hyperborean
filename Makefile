@@ -37,7 +37,7 @@ CATCH_VER=catch-1.5.6
 PHYSFS_VER=physfs-3.0.0
 GLFW_VER=glfw-3.2.1
 FMT_VER=fmt-4.0.0
-DEVIL_VER=devil-1.8.0
+STB_VER=stb-2017-09-27
 
 # Compiler selection and flags
 #
@@ -56,7 +56,7 @@ CXXFLAGS=-std=c++14 \
 	 -Ioutside/$(PHYSFS_VER)/src \
 	 -Ioutside/$(GLFW_VER)/include \
 	 -Ioutside/$(FMT_VER) \
-	 -Ioutside/$(DEVIL_VER)/DevIL/include
+	 -Ioutside/$(STB_VER)
 
 CXXWFLAGS=-Wall \
 	  -Wextra \
@@ -85,7 +85,9 @@ HYPERBOREAN_EVENTS_FILES=src/Events/EventChannel.o \
 			 src/Events/EventListener.o
 
 HYPERBOREAN_GRAPHICS_FILES=src/Graphics.o \
-			   src/Graphics/RenderWindow.o
+			   src/Graphics/RenderWindow.o \
+			   src/Graphics/Texture.o \
+			   src/Graphics/TextureLoader.o
 
 HYPERBOREAN_INPUT_FILES=src/Input.o
 
@@ -152,11 +154,6 @@ endif
 # FMT
 LIBFMT=outside/$(FMT_VER)/fmt/libfmt.a
 
-# DevIL (Image Library)
-LIBDEVIL=outside/$(DEVIL_VER)/DevIL/build/lib/x64/libIL.so \
-	 outside/$(DEVIL_VER)/DevIL/build/lib/x64/libILU.so \
-	 outside/$(DEVIL_VER)/DevIL/build/lib/x64/libILUT.so
-
 # Make targets
 #
 
@@ -169,15 +166,15 @@ ifeq ($(OS),win)
 endif
 
 tests: CXXFLAGS+=-DUNITTESTS
-tests: clean $(HYPERBOREAN_OFILES) $(HYPERBOREAN_TEST_MAIN) $(HYPERBOREAN_TEST_FILES) $(LIBLUAJIT) $(LIBPHYSFS) $(LIBGLFW) $(LIBFMT) $(LIBDEVIL)
+tests: clean $(HYPERBOREAN_OFILES) $(HYPERBOREAN_TEST_MAIN) $(HYPERBOREAN_TEST_FILES) $(LIBLUAJIT) $(LIBPHYSFS) $(LIBGLFW) $(LIBFMT)
 	@echo "    BUILD  $(BUILD)/test_hyperborean"
 	@mkdir -p $(BUILD)
-	@$(CXX) $(CXXFLAGS) -o $(BUILD)/test_hyperborean $(HYPERBOREAN_OFILES) $(HYPERBOREAN_TEST_FILES) $(LIBLUAJIT) $(LIBPHYSFS) $(LIBGLFW) $(LIBFMT) $(LIBDEVIL) $(LIBS)
+	@$(CXX) $(CXXFLAGS) -o $(BUILD)/test_hyperborean $(HYPERBOREAN_OFILES) $(HYPERBOREAN_TEST_FILES) $(LIBLUAJIT) $(LIBPHYSFS) $(LIBGLFW) $(LIBFMT) $(LIBS)
 
-$(BUILD)/hyperborean: $(HYPERBOREAN_MAIN) $(HYPERBOREAN_OFILES) $(LIBLUAJIT) $(LIBPHYSFS) $(LIBGLFW) $(LIBFMT) $(LIBDEVIL)
+$(BUILD)/hyperborean: $(HYPERBOREAN_MAIN) $(HYPERBOREAN_OFILES) $(LIBLUAJIT) $(LIBPHYSFS) $(LIBGLFW) $(LIBFMT)
 	@echo "    BUILD  $(BUILD)/hyperborean"
 	@mkdir -p $(BUILD)
-	@$(CXX) $(CXXFLAGS) -o $(BUILD)/hyperborean $(HYPERBOREAN_MAIN) $(HYPERBOREAN_OFILES) $(LIBLUAJIT) $(LIBPHYSFS) $(LIBGLFW) $(LIBFMT) $(LIBDEVIL) $(LIBS)
+	@$(CXX) $(CXXFLAGS) -o $(BUILD)/hyperborean $(HYPERBOREAN_MAIN) $(HYPERBOREAN_OFILES) $(LIBLUAJIT) $(LIBPHYSFS) $(LIBGLFW) $(LIBFMT) $(LIBS)
 
 %.o: %.cpp
 	@echo "    CXX    $@"
@@ -201,14 +198,6 @@ $(LIBFMT):
 	@echo "    LIB    $(FMT_VER)"
 	cd outside/$(FMT_VER) && cmake .
 	$(MAKE) -C outside/$(FMT_VER)
-
-$(LIBDEVIL):
-	@echo "    LIB    $(DEVIL_VER)"
-	cd outside/$(DEVIL_VER)/DevIL && mkdir -p build
-	cd outside/$(DEVIL_VER)/DevIL/build && cmake .. && make
-	cp outside/$(DEVIL_VER)/DevIL/build/lib/x64/libIL.so build/
-	cp outside/$(DEVIL_VER)/DevIL/build/lib/x64/libILU.so build/
-	cp outside/$(DEVIL_VER)/DevIL/build/lib/x64/libILUT.so build/
 
 tags: etags
 
