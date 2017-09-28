@@ -2,6 +2,7 @@
 #include "Log.hpp"
 
 #include <physfs.h>
+#include <fmt/format.h>
 
 bool Hyperborean::OS::FileSystem::Exists(
   const std::string& pathToFile)
@@ -16,7 +17,9 @@ Hyperborean::OS::File Hyperborean::OS::FileSystem::ReadFile(
 {
   if (!Exists(pathToFile))
   {
-    throw Hyperborean::OS::FileSystemError("Cannot find file: " + pathToFile);
+    throw Hyperborean::OS::FileSystemError(
+      fmt::format("Cannot find file: {}", pathToFile)
+    );
   }
 
   PHYSFS_file* file = PHYSFS_openRead(pathToFile.c_str());

@@ -35,9 +35,8 @@ INCLUDE=src
 LUAJIT_VER=luajit-2.0.4
 CATCH_VER=catch-1.5.6
 PHYSFS_VER=physfs-3.0.0
-SDL2_VER=SDL2-2.0.5
-SFML_VER=SFML-2.4.2
-ALLEGRO_VER=allegro-5.2.2.0
+GLFW_VER=glfw-3.2.1
+FMT_VER=fmt-4.0.0
 
 # Compiler selection and flags
 #
@@ -53,7 +52,9 @@ CXXFLAGS=-std=c++14 \
          -I$(INCLUDE) \
 	 -Ioutside/$(LUAJIT_VER)/src \
 	 -Ioutside/$(CATCH_VER) \
-	 -Ioutside/$(PHYSFS_VER)/src
+	 -Ioutside/$(PHYSFS_VER)/src \
+	 -Ioutside/$(GLFW_VER)/include \
+	 -Ioutside/$(FMT_VER)
 
 CXXWFLAGS=-Wall \
 	  -Wextra \
@@ -127,16 +128,11 @@ ifeq ($(OS),macos)
 	-framework Foundation
 endif
 
-# SDL2
-LIBSDL2=outside/$(SDL2_VER)/build/libSDL2main.a
-#LIBS+=-pthread -lsndio -lrt -lasound -lSDL2 -lSDL2main -lGL -lGLU -lglut
+# GLFW
+LIBGLFW=outside/$(GLFW_VER)/src/libglfw3.a
 
-# SFML
-#LIBS+=-lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio
-LIBSFML=outside/$(SFML_VER)/lib/libsfml-audio.so
-
-# Allegro
-# LIBS+=-lallegro -lallegro_main -lallegro_image -lallegro_ttf -lallegro_font -lallegro_color
+# FMT
+LIBFMT=outside/$(FMT_VER)/fmt/libfmt.a
 
 # Make targets
 #
@@ -150,15 +146,15 @@ ifeq ($(OS),win)
 endif
 
 tests: CXXFLAGS+=-DUNITTESTS
-tests: clean $(HYPERBOREAN_OFILES) $(HYPERBOREAN_TEST_MAIN) $(HYPERBOREAN_TEST_FILES) $(LIBLUAJIT) $(LIBPHYSFS)
+tests: clean $(HYPERBOREAN_OFILES) $(HYPERBOREAN_TEST_MAIN) $(HYPERBOREAN_TEST_FILES) $(LIBLUAJIT) $(LIBPHYSFS) $(LIBGLFW) $(LIBFMT)
 	@echo "    BUILD  $(BUILD)/test_hyperborean"
 	@mkdir -p $(BUILD)
-	@$(CXX) $(CXXFLAGS) -o $(BUILD)/test_hyperborean $(HYPERBOREAN_OFILES) $(HYPERBOREAN_TEST_FILES) $(LIBLUAJIT) $(LIBPHYSFS) $(LIBS)
+	@$(CXX) $(CXXFLAGS) -o $(BUILD)/test_hyperborean $(HYPERBOREAN_OFILES) $(HYPERBOREAN_TEST_FILES) $(LIBLUAJIT) $(LIBPHYSFS) $(LIBGLFW) $(LIBFMT) $(LIBS)
 
 $(BUILD)/hyperborean: $(HYPERBOREAN_MAIN) $(HYPERBOREAN_OFILES) $(LIBLUAJIT) $(LIBPHYSFS)
 	@echo "    BUILD  $(BUILD)/hyperborean"
 	@mkdir -p $(BUILD)
-	@$(CXX) $(CXXFLAGS) -o $(BUILD)/hyperborean $(HYPERBOREAN_MAIN) $(HYPERBOREAN_OFILES) $(LIBLUAJIT) $(LIBPHYSFS) $(LIBS)
+	@$(CXX) $(CXXFLAGS) -o $(BUILD)/hyperborean $(HYPERBOREAN_MAIN) $(HYPERBOREAN_OFILES) $(LIBLUAJIT) $(LIBPHYSFS) $(LIBGLFW) $(LIBFMT) $(LIBS)
 
 %.o: %.cpp
 	@echo "    CXX    $@"
@@ -173,17 +169,15 @@ $(LIBPHYSFS):
 	cd outside/$(PHYSFS_VER) && cmake .
 	$(MAKE) -C outside/$(PHYSFS_VER)
 
-$(LIBSDL2):
-	@echo "    LIB    $(SDL2_VER)"
-	cd outside && unzip $(SDL2_VER).zip
-	cd outside/$(SDL2_VER) && ./configure
-	$(MAKE) -C outside/$(SDL2_VER)
+$(LIBGLFW):
+	@echo "    LIB    $(GLFW_VER)"
+	cd outside/$(GLFW_VER) && cmake .
+	$(MAKE) -C outside/$(GLFW_VER)
 
-$(LIBSFML):
-	@echo "    LIB    $(SFML_VER)"
-	cd outside && unzip $(SFML_VER).zip
-	cd outside/$(SFML_VER) && cmake .
-	$(MAKE) -C outside/$(SFML_VER)
+$(LIBFMT):
+	@echo "    LIB    $(FMT_VER)"
+	cd outside/$(FMT_VER) && cmake .
+	$(MAKE) -C outside/$(FMT_VER)
 
 tags: etags
 

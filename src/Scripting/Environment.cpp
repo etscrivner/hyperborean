@@ -3,6 +3,8 @@
 
 #include <map>
 
+#include <fmt/format.h>
+
 static int hello(lua_State*) {
   HBLOG_DEBUG("Hello from Lua");
   return 0;
@@ -207,7 +209,7 @@ void Hyperborean::Scripting::Environment::GetTable(
   if (!lua_istable(_luaState, -1))
   {
     throw Hyperborean::Scripting::ParseError(
-      "Expected table named '" + tableName + "'"
+      fmt::format("Expected table name '{}'", tableName)
     );
   }
 }

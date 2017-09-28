@@ -12,6 +12,10 @@ namespace Hyperborean {
   class ConstraintViolationError : public BaseError {
     using BaseError::BaseError;
   };
+  // Raised whenever a subsystem fails to initialize.
+  class SubsystemInitializationError : public BaseError {
+    using BaseError::BaseError;
+  };
 }
 
 #endif // HYPERBOREAN_ERRORS_HPP_INCLUDED

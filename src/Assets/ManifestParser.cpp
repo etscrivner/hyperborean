@@ -5,6 +5,8 @@
 #include "OS/FileSystem.hpp"
 #include "Scripting/Environment.hpp"
 
+#include <fmt/format.h>
+
 const std::string
 Hyperborean::Assets::ManifestParser::ManifestTableName = "manifest";
 
@@ -53,7 +55,7 @@ Hyperborean::Assets::ManifestParser::FromFile(
 
         if (pathEntry == items.end()) {
           throw Hyperborean::ConstraintViolationError(
-            "Asset '" + entryName + "' missing 'path' entry."
+            fmt::format("Asset '{}' is missing 'path' entry.", entryName)
           );
         }
 
