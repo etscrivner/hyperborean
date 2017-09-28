@@ -135,8 +135,13 @@ endif
 # GLFW
 LIBS+=-lpthread
 LIBGLFW=outside/$(GLFW_VER)/src/libglfw3.a
+
 ifeq ($(OS),linux)
   LIBS+=-lX11 -lXrandr -lXi -lXxf86vm -lXinerama -lXcursor
+endif
+
+ifeq ($(OS),macos)
+  LIBS+=-framework Cocoa -framework CoreVideo
 endif
 
 # FMT
