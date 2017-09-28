@@ -82,6 +82,8 @@ HYPERBOREAN_ASSETS_FILES=src/Assets/Asset.o \
 HYPERBOREAN_EVENTS_FILES=src/Events/EventChannel.o \
 			 src/Events/EventListener.o
 
+HYPERBOREAN_GRAPHICS_FILES=src/Graphics.o
+
 HYPERBOREAN_OS_FILES=src/OS.o \
 		     src/OS/File.o \
 		     src/OS/FileSystem.o
@@ -95,6 +97,7 @@ HYPERBOREAN_TEST_FILES=tests/Main.o \
 HYPERBOREAN_OFILES=$(HYPERBOREAN_ROOT_FILES) \
 		   $(HYPERBOREAN_ASSETS_FILES) \
 		   $(HYPERBOREAN_EVENTS_FILES) \
+		   $(HYPERBOREAN_GRAPHICS_FILES) \
 		   $(HYPERBOREAN_OS_FILES) \
 	           $(HYPERBOREAN_SCRIPTING_FILES) \
 
@@ -129,7 +132,11 @@ ifeq ($(OS),macos)
 endif
 
 # GLFW
+LIBS+=-lpthread
 LIBGLFW=outside/$(GLFW_VER)/src/libglfw3.a
+ifeq ($(OS),linux)
+  LIBS+=-lX11 -lXrandr -lXi -lXxf86vm -lXinerama -lXcursor
+endif
 
 # FMT
 LIBFMT=outside/$(FMT_VER)/fmt/libfmt.a
@@ -151,7 +158,7 @@ tests: clean $(HYPERBOREAN_OFILES) $(HYPERBOREAN_TEST_MAIN) $(HYPERBOREAN_TEST_F
 	@mkdir -p $(BUILD)
 	@$(CXX) $(CXXFLAGS) -o $(BUILD)/test_hyperborean $(HYPERBOREAN_OFILES) $(HYPERBOREAN_TEST_FILES) $(LIBLUAJIT) $(LIBPHYSFS) $(LIBGLFW) $(LIBFMT) $(LIBS)
 
-$(BUILD)/hyperborean: $(HYPERBOREAN_MAIN) $(HYPERBOREAN_OFILES) $(LIBLUAJIT) $(LIBPHYSFS)
+$(BUILD)/hyperborean: $(HYPERBOREAN_MAIN) $(HYPERBOREAN_OFILES) $(LIBLUAJIT) $(LIBPHYSFS) $(LIBGLFW) $(LIBFMT)
 	@echo "    BUILD  $(BUILD)/hyperborean"
 	@mkdir -p $(BUILD)
 	@$(CXX) $(CXXFLAGS) -o $(BUILD)/hyperborean $(HYPERBOREAN_MAIN) $(HYPERBOREAN_OFILES) $(LIBLUAJIT) $(LIBPHYSFS) $(LIBGLFW) $(LIBFMT) $(LIBS)

@@ -1,27 +1,15 @@
 #include "Application.hpp"
+#include "Assets/ManifestParser.hpp"
 #include "Errors.hpp"
+#include "Graphics.hpp"
 #include "Log.hpp"
 #include "OS.hpp"
-#include "Assets/ManifestParser.hpp"
+#include "Scripting/Environment.hpp"
 #include "Settings.hpp"
 #include "SettingsParser.hpp"
-#include "Scripting/Environment.hpp"
 
 #include <iostream>
 #include <cstdlib>
-
-#ifdef __APPLE__
-#include <OpenGL/gl.h>
-#include <OpenGL/glu.h>
-#include <GLUT/glut.h>
-#else
-#ifdef _WIN32
-  #include <windows.h>
-#endif
-#include <GL/gl.h>
-#include <GL/glu.h>
-#include <GL/glut.h>
-#endif
 
 int Hyperborean::Application::Execute(std::string applicationName,
                                       std::vector<std::string> arguments) {
@@ -61,6 +49,7 @@ void Hyperborean::Application::InitializeSubsystems(
 {
   HBLOG_INFO("Initializing subsystems.");
   Hyperborean::OS::Initialize(applicationName);
+  Hyperborean::Graphics::Initialize();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -69,4 +58,5 @@ void Hyperborean::Application::ShutdownSubsystems()
 {
   HBLOG_INFO("Shutting down subsystems.");
   Hyperborean::OS::Shutdown();
+  Hyperborean::Graphics::Shutdown();
 }

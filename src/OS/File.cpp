@@ -22,9 +22,9 @@ void Hyperborean::OS::File::SetBuffer(
   Reset();
   // NOTE: Need to add one to factor in null-terminator, otherwise we get junk as it searches to \0
   // char to terminate at.
-  buffer_ = new char[sizeBytes+1];
+  buffer_ = new char[sizeBytes];
   sizeBytes_ = sizeBytes;
-  memcpy(buffer_, buffer, sizeof(char)*sizeBytes+1);
+  memcpy(buffer_, buffer, sizeof(char)*sizeBytes);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
