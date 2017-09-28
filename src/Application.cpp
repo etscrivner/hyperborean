@@ -2,6 +2,7 @@
 #include "Assets/ManifestParser.hpp"
 #include "Errors.hpp"
 #include "Graphics.hpp"
+#include "Graphics/RenderWindow.hpp"
 #include "Log.hpp"
 #include "OS.hpp"
 #include "Scripting/Environment.hpp"
@@ -32,6 +33,10 @@ int Hyperborean::Application::Execute(std::string applicationName,
 
     Hyperborean::Assets::ManifestParser manifestParser;
     manifestParser.FromFile(settings.manifestPath);
+
+    Hyperborean::Graphics::RenderWindow renderWindow(
+      settings.title, settings.displayWidth, settings.displayHeight
+    );
   } catch(Hyperborean::BaseError& error) {
     HBLOG_ERROR("Exception caught: %s", error.what());
     ShutdownSubsystems();

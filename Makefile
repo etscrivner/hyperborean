@@ -82,7 +82,8 @@ HYPERBOREAN_ASSETS_FILES=src/Assets/Asset.o \
 HYPERBOREAN_EVENTS_FILES=src/Events/EventChannel.o \
 			 src/Events/EventListener.o
 
-HYPERBOREAN_GRAPHICS_FILES=src/Graphics.o
+HYPERBOREAN_GRAPHICS_FILES=src/Graphics.o \
+			   src/Graphics/RenderWindow.o
 
 HYPERBOREAN_OS_FILES=src/OS.o \
 		     src/OS/File.o \
