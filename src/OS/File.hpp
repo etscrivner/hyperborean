@@ -48,4 +48,5 @@ namespace Hyperborean {
     };
   }
 }
+
 #endif // HYPERBOREAN_OS_FILE_HPP_INCLUDED

@@ -27,6 +27,17 @@ Hyperborean::Graphics::RenderWindow::RenderWindow(
   }
 
   glfwMakeContextCurrent(windowData_->window);
+
+  int iwidth, iheight;
+  glfwGetFramebufferSize(windowData_->window, &iwidth, &iheight);
+  glViewport(0, 0, iwidth, iheight);
+
+  glMatrixMode(GL_PROJECTION);
+  glLoadIdentity();
+  double halfWidth = width / 2.0f;
+  double halfHeight = height / 2.0f;
+  glOrtho(-halfWidth, halfWidth, -halfHeight, halfHeight, 0.0f, 1.0f);
+  glMatrixMode(GL_MODELVIEW);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
