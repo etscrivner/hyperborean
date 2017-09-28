@@ -26,7 +26,7 @@ Hyperborean::OS::File Hyperborean::OS::FileSystem::ReadFile(
   PHYSFS_sint64 fileSize = PHYSFS_fileLength(file);
 
   char* buffer = new char[fileSize];
-  PHYSFS_sint64 lengthRead = PHYSFS_readBytes(file, buffer, fileSize);
+  PHYSFS_sint64 lengthRead = PHYSFS_readBytes(file, (void*)buffer, fileSize);
   PHYSFS_close(file);
 
   if (lengthRead != fileSize)

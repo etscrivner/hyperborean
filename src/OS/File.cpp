@@ -23,6 +23,8 @@ void Hyperborean::OS::File::SetBuffer(
   buffer_ = new char[sizeBytes+1];
   sizeBytes_ = sizeBytes;
   memcpy(buffer_, buffer, sizeof(char)*sizeBytes);
+  // Ensure the buffer is null-terminated. Lua parser tends to fail if string
+  // provided is not null-terminated.
   buffer_[sizeBytes-1] = '\0';
 }
 
