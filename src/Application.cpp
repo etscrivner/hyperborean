@@ -18,6 +18,7 @@
 #include "SettingsParser.hpp"
 
 #include <iostream>
+#include <memory>
 #include <cstdlib>
 
 int Hyperborean::Application::Execute(std::string applicationName,
@@ -26,41 +27,32 @@ int Hyperborean::Application::Execute(std::string applicationName,
     HBLOG_INFO("Starting %s", applicationName.c_str());
     InitializeSubsystems(applicationName);
 
-    if (arguments.size() > 0) {
-      HBLOG_INFO("Running script %s", arguments.front().c_str());
-
-      Hyperborean::Scripting::Environment env("root");
-
-      env.LoadFile(arguments.front());
-      env.Execute("main");
+    if (!arguments.empty())
+    {
+      HBLOG_INFO("Got arguments");
     }
 
     SettingsParser settingsParser;
     Settings settings = settingsParser.FromFile("settings.lua");
     std::cout << settings << std::endl;
 
-    Hyperborean::Assets::ManifestParser::FromFile(settings.manifestPath);
+    auto assetStore = Hyperborean::Assets::ManifestParser::FromFile(
+      settings.manifestPath);
 
-    Hyperborean::Graphics::RenderWindow renderWindow(
-      settings.title, settings.displayWidth, settings.displayHeight
-    );
+    auto renderWindow = std::make_shared<Hyperborean::Graphics::RenderWindow>(
+      settings.title, settings.displayWidth, settings.displayHeight);
+    Hyperborean::Graphics::Renderer renderer(renderWindow);
 
-    std::shared_ptr<Hyperborean::Graphics::Texture>
-    texture = Hyperborean::Graphics::TextureLoader::FromFile("grass_tile.jpg");
+    Hyperborean::Scripting::Environment environment("main");
+    environment.LoadFile(settings.mainScriptPath);
+    environment.Execute();
 
-    Hyperborean::Graphics::Sprite sprite;
-    sprite.SetTexture(texture);
-    sprite.SetPosition(-100, 100);
-
-    Hyperborean::Graphics::Renderer renderer;
-
-    while (!Hyperborean::Input::TerminalEventReceived(renderWindow))
+    while (!Hyperborean::Input::TerminalEventReceived(*renderWindow))
     {
       renderer.Clear(Hyperborean::Graphics::Color::kBlack);
-      renderer.DrawSprite(sprite);
-
-      renderWindow.SwapBuffers();
-      Hyperborean::Input::WaitForEventsTimeout(0.6);
+      environment.Execute(settings.updateMethodName);
+      renderer.SwapBuffers();
+      Hyperborean::Input::WaitForEventsTimeout(0.0125);
     }
   } catch(Hyperborean::BaseError& error) {
     HBLOG_ERROR("Exception caught: %s", error.what());

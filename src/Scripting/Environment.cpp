@@ -1,5 +1,7 @@
 #include "Scripting/Environment.hpp"
 #include "Log.hpp"
+#include "OS/File.hpp"
+#include "OS/FileSystem.hpp"
 
 #include <map>
 
@@ -52,9 +54,8 @@ void Hyperborean::Scripting::Environment::LoadString(
 
 void Hyperborean::Scripting::Environment::LoadFile(const std::string& filePath)
 {
-  if (luaL_loadfile(_luaState, filePath.c_str()) != 0) {
-    throw Hyperborean::Scripting::ParseError(GetErrorMessage());
-  }
+  auto file = Hyperborean::OS::FileSystem::ReadFile(filePath);
+  LoadString(file.GetBuffer());
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -71,16 +72,12 @@ void Hyperborean::Scripting::Environment::Execute()
 void Hyperborean::Scripting::Environment::Execute(
   const std::string& functionName)
 {
-  // First execute the script in order to define all functions
-  Execute();
-
   // Now prepare the stack for the function call
   lua_getglobal(_luaState, functionName.c_str());
 
   if (!lua_isfunction(_luaState, -1)) {
     HBLOG_ERROR(
-      "Expected function, found %s",
-      lua_typename(_luaState, -1));
+      "Expected function, found %s", lua_typename(_luaState, -1));
   }
 
   // Call the function on the top of the stack.

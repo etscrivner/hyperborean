@@ -9,6 +9,7 @@ namespace Hyperborean {
       // Constants
 
       static const Color kBlack;
+      static const Color kWhite;
 
       /////////////////////////////////////////////////////////////////////////
       // Attributes

@@ -22,6 +22,8 @@ namespace Hyperborean {
     std::string manifestPath;
     /// Path to the main script file
     std::string mainScriptPath;
+    /// Method called to routinely update game
+    std::string updateMethodName;
 
     ///////////////////////////////////////////////////////////////////////////
     // Constants
@@ -30,6 +32,7 @@ namespace Hyperborean {
     static const std::string DEFAULT_GAME_TITLE;
     static const std::string DEFAULT_MANIFEST_PATH;
     static const std::string DEFAULT_MAIN_SCRIPT_PATH;
+    static const std::string DEFAULT_UPDATE_METHOD_NAME;
 
     static const int DEFAULT_CANVAS_WIDTH;
     static const int DEFAULT_CANVAS_HEIGHT;
@@ -46,7 +49,9 @@ namespace Hyperborean {
       displayWidth(DEFAULT_DISPLAY_WIDTH),
       displayHeight(DEFAULT_DISPLAY_HEIGHT),
       manifestPath(DEFAULT_MANIFEST_PATH),
-      mainScriptPath(DEFAULT_MAIN_SCRIPT_PATH) {}
+      mainScriptPath(DEFAULT_MAIN_SCRIPT_PATH),
+      updateMethodName(DEFAULT_UPDATE_METHOD_NAME)
+    { }
 
     ///////////////////////////////////////////////////////////////////////////
     // Streams
@@ -62,6 +67,7 @@ namespace Hyperborean {
              << settings.displayHeight << "," << std::endl;
       stream << "  manifest='" << settings.manifestPath << "'," << std::endl;
       stream << "  main='" << settings.mainScriptPath << "'" << std::endl;
+      stream << "  updateMethodName='" << settings.updateMethodName << "'" << std::endl;
       stream << "]";
       return stream;
     }

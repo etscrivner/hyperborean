@@ -2,6 +2,13 @@
 #include "Graphics/Renderer.hpp"
 #include "Log.hpp"
 
+Hyperborean::Graphics::Renderer::Renderer(
+  std::shared_ptr<Hyperborean::Graphics::RenderWindow> renderWindow)
+  : renderWindow_(renderWindow)
+{ }
+
+///////////////////////////////////////////////////////////////////////////////
+
 void Hyperborean::Graphics::Renderer::Clear(
   const Hyperborean::Graphics::Color& clearColor)
 {
@@ -38,5 +45,11 @@ void Hyperborean::Graphics::Renderer::DrawSprite(
   glPopMatrix();
 
   glDisable(GL_TEXTURE_2D);
+}
 
+///////////////////////////////////////////////////////////////////////////////
+
+void Hyperborean::Graphics::Renderer::SwapBuffers()
+{
+  renderWindow_->SwapBuffers();
 }
