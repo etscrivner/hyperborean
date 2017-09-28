@@ -27,6 +27,9 @@ namespace Hyperborean {
       // Swap buffers displaying the data that was written to the back frame
       // buffer.
       void SwapBuffers();
+
+      // Indicates whether or not the render window was closed.
+      bool ShouldClose() const;
     private:
       /////////////////////////////////////////////////////////////////////////
       // Private attributes

@@ -43,3 +43,10 @@ void Hyperborean::Graphics::RenderWindow::SwapBuffers()
 {
   glfwSwapBuffers(windowData_->window);
 }
+
+///////////////////////////////////////////////////////////////////////////////
+
+bool Hyperborean::Graphics::RenderWindow::ShouldClose() const
+{
+  return glfwWindowShouldClose(windowData_->window) == GLFW_TRUE;
+}

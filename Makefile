@@ -85,6 +85,8 @@ HYPERBOREAN_EVENTS_FILES=src/Events/EventChannel.o \
 HYPERBOREAN_GRAPHICS_FILES=src/Graphics.o \
 			   src/Graphics/RenderWindow.o
 
+HYPERBOREAN_INPUT_FILES=src/Input.o
+
 HYPERBOREAN_OS_FILES=src/OS.o \
 		     src/OS/File.o \
 		     src/OS/FileSystem.o
@@ -99,6 +101,7 @@ HYPERBOREAN_OFILES=$(HYPERBOREAN_ROOT_FILES) \
 		   $(HYPERBOREAN_ASSETS_FILES) \
 		   $(HYPERBOREAN_EVENTS_FILES) \
 		   $(HYPERBOREAN_GRAPHICS_FILES) \
+	  	   $(HYPERBOREAN_INPUT_FILES) \
 		   $(HYPERBOREAN_OS_FILES) \
 	           $(HYPERBOREAN_SCRIPTING_FILES) \
 
@@ -137,11 +140,11 @@ LIBS+=-lpthread
 LIBGLFW=outside/$(GLFW_VER)/src/libglfw3.a
 
 ifeq ($(OS),linux)
-  LIBS+=-lX11 -lXrandr -lXi -lXxf86vm -lXinerama -lXcursor
+  LIBS+=-lGL -lX11 -lXrandr -lXi -lXxf86vm -lXinerama -lXcursor
 endif
 
 ifeq ($(OS),macos)
-  LIBS+=-framework Cocoa -framework CoreVideo
+  LIBS+=-framework Cocoa -framework CoreVideo -framework OpenGL
 endif
 
 # FMT

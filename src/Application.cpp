@@ -3,6 +3,7 @@
 #include "Errors.hpp"
 #include "Graphics.hpp"
 #include "Graphics/RenderWindow.hpp"
+#include "Input.hpp"
 #include "Log.hpp"
 #include "OS.hpp"
 #include "Scripting/Environment.hpp"
@@ -37,6 +38,13 @@ int Hyperborean::Application::Execute(std::string applicationName,
     Hyperborean::Graphics::RenderWindow renderWindow(
       settings.title, settings.displayWidth, settings.displayHeight
     );
+
+    while (!Hyperborean::Input::TerminalEventReceived(renderWindow))
+    {
+      glClear(GL_COLOR_BUFFER_BIT);
+      renderWindow.SwapBuffers();
+      Hyperborean::Input::WaitForEventsTimeout(0.6);
+    }
   } catch(Hyperborean::BaseError& error) {
     HBLOG_ERROR("Exception caught: %s", error.what());
     ShutdownSubsystems();
@@ -55,6 +63,7 @@ void Hyperborean::Application::InitializeSubsystems(
   HBLOG_INFO("Initializing subsystems.");
   Hyperborean::OS::Initialize(applicationName);
   Hyperborean::Graphics::Initialize();
+  Hyperborean::Input::Initialize();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -64,4 +73,5 @@ void Hyperborean::Application::ShutdownSubsystems()
   HBLOG_INFO("Shutting down subsystems.");
   Hyperborean::OS::Shutdown();
   Hyperborean::Graphics::Shutdown();
+  Hyperborean::Input::Shutdown();
 }
