@@ -16,7 +16,7 @@ namespace Hyperborean {
       //   pathToTexture - Path to the texture file to be loaded.
       //
       // Returns: A pointer to the loaded texture.
-      std::unique_ptr<Texture>
+      std::shared_ptr<Texture>
       FromFile(const std::string& pathToTexture);
     }
   }

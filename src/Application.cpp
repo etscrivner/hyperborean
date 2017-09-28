@@ -2,7 +2,10 @@
 #include "Assets/ManifestParser.hpp"
 #include "Errors.hpp"
 #include "Graphics.hpp"
+#include "Graphics/Color.hpp"
+#include "Graphics/Renderer.hpp"
 #include "Graphics/RenderWindow.hpp"
+#include "Graphics/Sprite.hpp"
 #include "Graphics/Texture.hpp"
 #include "Graphics/TextureLoader.hpp"
 #include "Input.hpp"
@@ -42,27 +45,19 @@ int Hyperborean::Application::Execute(std::string applicationName,
       settings.title, settings.displayWidth, settings.displayHeight
     );
 
-    std::unique_ptr<Hyperborean::Graphics::Texture>
+    std::shared_ptr<Hyperborean::Graphics::Texture>
     texture = Hyperborean::Graphics::TextureLoader::FromFile("grass_tile.jpg");
 
-    int hWidth = texture->Width() / 2;
-    int hHeight = texture->Height() / 2;
+    Hyperborean::Graphics::Sprite sprite;
+    sprite.SetTexture(texture);
+    sprite.SetPosition(-100, 100);
+
+    Hyperborean::Graphics::Renderer renderer;
 
     while (!Hyperborean::Input::TerminalEventReceived(renderWindow))
     {
-      glClear(GL_COLOR_BUFFER_BIT);
-
-      glLoadIdentity();
-      glColor3f(1,1,1);
-      glEnable(GL_TEXTURE_2D);
-      glBindTexture(GL_TEXTURE_2D, texture->TextureID());
-      glBegin(GL_QUADS);
-      glTexCoord2f(0, 0); glVertex3f(-hWidth, hHeight, 0);
-      glTexCoord2f(0, 1); glVertex3f(-hWidth, -hHeight, 0);
-      glTexCoord2f(1, 1); glVertex3f(hWidth, -hHeight, 0);
-      glTexCoord2f(1, 0); glVertex3f(hWidth, hHeight, 0);
-      glEnd();
-      glDisable(GL_TEXTURE_2D);
+      renderer.Clear(Hyperborean::Graphics::Color::kBlack);
+      renderer.DrawSprite(sprite);
 
       renderWindow.SwapBuffers();
       Hyperborean::Input::WaitForEventsTimeout(0.6);

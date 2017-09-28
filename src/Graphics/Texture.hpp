@@ -1,6 +1,8 @@
 #ifndef HYPERBOREAN_GRAPHICS_TEXTURE_HPP_INCLUDED
 #define HYPERBOREAN_GRAPHICS_TEXTURE_HPP_INCLUDED
 
+#include "Graphics.hpp"
+
 #include <memory>
 
 namespace Hyperborean {

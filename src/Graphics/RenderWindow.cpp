@@ -27,17 +27,7 @@ Hyperborean::Graphics::RenderWindow::RenderWindow(
   }
 
   glfwMakeContextCurrent(windowData_->window);
-
-  int iwidth, iheight;
-  glfwGetFramebufferSize(windowData_->window, &iwidth, &iheight);
-  glViewport(0, 0, iwidth, iheight);
-
-  glMatrixMode(GL_PROJECTION);
-  glLoadIdentity();
-  double halfWidth = width / 2.0f;
-  double halfHeight = height / 2.0f;
-  glOrtho(-halfWidth, halfWidth, -halfHeight, halfHeight, 0.0f, 1.0f);
-  glMatrixMode(GL_MODELVIEW);
+  InitializeCoordinateSystem(width, height);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -60,4 +50,27 @@ void Hyperborean::Graphics::RenderWindow::SwapBuffers()
 bool Hyperborean::Graphics::RenderWindow::ShouldClose() const
 {
   return glfwWindowShouldClose(windowData_->window) == GLFW_TRUE;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+void Hyperborean::Graphics::RenderWindow::InitializeCoordinateSystem(
+  int width, int height)
+{
+  int fbWidth;
+  int fbHeight;
+
+  glfwGetFramebufferSize(windowData_->window, &fbWidth, &fbHeight);
+  glViewport(0, 0, fbWidth, fbHeight);
+
+  double halfWidth = width / 2.0f;
+  double halfHeight = height / 2.0f;
+
+  glMatrixMode(GL_PROJECTION);
+  glLoadIdentity();
+  glOrtho(
+    -halfWidth, halfWidth, -halfHeight, halfHeight, 0.0f, 0.1f
+  );
+  glMatrixMode(GL_MODELVIEW);
+  glLoadIdentity();
 }

@@ -85,7 +85,10 @@ HYPERBOREAN_EVENTS_FILES=src/Events/EventChannel.o \
 			 src/Events/EventListener.o
 
 HYPERBOREAN_GRAPHICS_FILES=src/Graphics.o \
+			   src/Graphics/Color.o \
+			   src/Graphics/Renderer.o \
 			   src/Graphics/RenderWindow.o \
+			   src/Graphics/Sprite.o \
 			   src/Graphics/Texture.o \
 			   src/Graphics/TextureLoader.o
 

@@ -7,7 +7,7 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
-std::unique_ptr<Hyperborean::Graphics::Texture>
+std::shared_ptr<Hyperborean::Graphics::Texture>
 Hyperborean::Graphics::TextureLoader::FromFile(
   const std::string& pathToTexture)
 {
@@ -67,7 +67,7 @@ Hyperborean::Graphics::TextureLoader::FromFile(
 
   stbi_image_free(imageData);
 
-  return std::make_unique<Hyperborean::Graphics::Texture>(
+  return std::make_shared<Hyperborean::Graphics::Texture>(
     textureId, textureWidth, textureHeight
   );
 }

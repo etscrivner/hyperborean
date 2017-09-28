@@ -32,6 +32,25 @@ namespace Hyperborean {
       bool ShouldClose() const;
     private:
       /////////////////////////////////////////////////////////////////////////
+      // Methods
+
+      // Initializes the coordinate system used by the application. We try to
+      // set up a system as follows:
+      //
+      //                                   | (0, height/2)
+      //                                   |
+      //                                   |
+      //                                   |
+      //                                   | (0, 0)
+      // (-width/2, 0) --------------------+-------------------- (width/2, 0)
+      //                                   |
+      //                                   |
+      //                                   |
+      //                                   |
+      //                                   | (0, -height/2)
+      void InitializeCoordinateSystem(int width, int height);
+
+      /////////////////////////////////////////////////////////////////////////
       // Private attributes
       
       // Forward declaration for PImpl pattern

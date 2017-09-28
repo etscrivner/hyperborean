@@ -1,0 +1,44 @@
+#include "Sprite.hpp"
+
+Hyperborean::Graphics::Sprite::Sprite()
+  : x_(0), y_(0), texture_(NULL)
+{ }
+
+///////////////////////////////////////////////////////////////////////////////
+
+void Hyperborean::Graphics::Sprite::SetTexture(
+  std::shared_ptr<Hyperborean::Graphics::Texture> texture)
+{
+  texture_ = texture;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+void Hyperborean::Graphics::Sprite::SetPosition(
+  int x, int y)
+{
+  x_ = x;
+  y_ = y;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+int Hyperborean::Graphics::Sprite::X() const
+{
+  return x_;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+int Hyperborean::Graphics::Sprite::Y() const
+{
+  return y_;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+std::shared_ptr<Hyperborean::Graphics::Texture>
+Hyperborean::Graphics::Sprite::Texture()
+{
+  return texture_;
+}
