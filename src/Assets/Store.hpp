@@ -28,6 +28,14 @@ namespace Hyperborean {
           const std::string& path,
           const Asset::AssetType type);
 
+      // Attempt to find the asset with the given name
+      //
+      // Parameters:
+      //   name - The name of the asset in the asset store.
+      //
+      // Returns: Asset or NULL if an asset with the given name was not found.
+      Asset* Find(const std::string& name);
+
       // Indicates whether or not an asset with the given name exists.
       //
       // Parameters:
@@ -36,6 +44,7 @@ namespace Hyperborean {
       // Returns: True if the asset exists in the store, false otherwise.
       bool Exists(const std::string& name) const;
 
+      // Returns: The number of assets currently in the asset store.
       std::size_t Size() const;
     private:
       // Association of manifest name to loaded asset

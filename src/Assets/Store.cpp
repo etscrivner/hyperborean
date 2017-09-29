@@ -17,6 +17,20 @@ Hyperborean::Assets::Store::Add(
 
 ///////////////////////////////////////////////////////////////////////////////
 
+Hyperborean::Assets::Asset*
+Hyperborean::Assets::Store::Find(const std::string& name)
+{
+  auto result = store_.find(name);
+  if (result != store_.end())
+  {
+    return &(result->second);
+  }
+
+  return NULL;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
 bool Hyperborean::Assets::Store::Exists(const std::string& name) const
 {
   return store_.find(name) != store_.end();
