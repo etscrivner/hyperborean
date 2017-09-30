@@ -44,25 +44,23 @@ Hyperborean::Graphics::TextureLoader::FromFile(
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
+  GLint textureFormat = GL_RGB;
+
   if(numTextureChannels == 3)
   {
-    glTexImage2D(
-      GL_TEXTURE_2D, 0, GL_RGB,
-      textureWidth, textureHeight,
-      0, GL_RGB, GL_UNSIGNED_BYTE,
-      imageData
-    );
+    textureFormat = GL_RGB;
   }
   else if(numTextureChannels == 4)
   {
-      glTexImage2D(
-        GL_TEXTURE_2D, 0, GL_RGBA,
-        textureWidth, textureHeight,
-        0, GL_RGBA, GL_UNSIGNED_BYTE,
-        imageData
-      );
+    textureFormat = GL_RGBA;
   }
 
+  glTexImage2D(
+    GL_TEXTURE_2D, 0, textureFormat,
+    textureWidth, textureHeight,
+    0, textureFormat, GL_UNSIGNED_BYTE,
+    imageData
+  );
   glBindTexture(GL_TEXTURE_2D, 0);
 
   stbi_image_free(imageData);
