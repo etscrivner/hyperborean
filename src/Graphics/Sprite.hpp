@@ -21,7 +21,7 @@ namespace Hyperborean {
 
       int X() const;
       int Y() const;
-      std::shared_ptr<Texture> Texture();
+      std::shared_ptr<Hyperborean::Graphics::Texture> Texture();
     private:
       /////////////////////////////////////////////////////////////////////////
       // Attributes
