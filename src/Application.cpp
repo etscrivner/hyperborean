@@ -27,6 +27,7 @@ int Hyperborean::Application::Execute(std::string applicationName,
   try {
     HBLOG_INFO("Starting %s", applicationName.c_str());
     InitializeSubsystems(applicationName);
+    InitializeServices();
 
     if (!arguments.empty())
     {
@@ -74,9 +75,6 @@ void Hyperborean::Application::InitializeSubsystems(
   Hyperborean::OS::Initialize(applicationName);
   Hyperborean::Graphics::Initialize();
   Hyperborean::Input::Initialize();
-
-  Hyperborean::Locator::SetTextureLoader(
-    std::make_shared<Hyperborean::Graphics::TextureLoader>());
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -87,4 +85,12 @@ void Hyperborean::Application::ShutdownSubsystems()
   Hyperborean::OS::Shutdown();
   Hyperborean::Graphics::Shutdown();
   Hyperborean::Input::Shutdown();
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+void Hyperborean::Application::InitializeServices()
+{
+  Hyperborean::Locator::SetTextureLoader(
+    std::make_shared<Hyperborean::Graphics::TextureLoader>());
 }

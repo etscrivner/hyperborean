@@ -36,7 +36,7 @@ namespace Hyperborean {
       //   pathToManifestFile - Path to the manifest file.
       //
       // Returns: Pointer to the newly loaded asset store.
-      Store
+      std::shared_ptr<Hyperborean::Assets::Store>
       FromFile(const std::string& pathToManifestFile);
     }
   }

@@ -22,6 +22,9 @@ namespace Hyperborean {
     void InitializeSubsystems(const std::string& applicationName);
     // Cleanup and shutdown all major subsystems.
     void ShutdownSubsystems();
+
+    // Initialize all services
+    void InitializeServices();
   };
 }
 

@@ -6,7 +6,7 @@
 #include <memory>
 
 namespace TextureTable {
-  static int Find(lua_State* state) {
+  int Find(lua_State* state) {
     if (!lua_isstring(state, 1)) {
       return luaL_typerror(state, 1, "string");
     }
@@ -35,7 +35,7 @@ namespace TextureTable {
 
   /////////////////////////////////////////////////////////////////////////////
 
-  static int GetWidth(lua_State* state) {
+  int GetWidth(lua_State* state) {
     void* texturePtr = luaL_checkudata(state, 1, "Texture");
 
     if (texturePtr)
@@ -56,7 +56,7 @@ namespace TextureTable {
 
   /////////////////////////////////////////////////////////////////////////////
 
-  static int GetHeight(lua_State* state) {
+  int GetHeight(lua_State* state) {
     void* texturePtr = luaL_checkudata(state, 1, "Texture");
 
     if (texturePtr)
@@ -77,7 +77,7 @@ namespace TextureTable {
 
   /////////////////////////////////////////////////////////////////////////////
 
-  static int Destroy(lua_State* state) {
+  int Destroy(lua_State* state) {
     void* texturePtr = luaL_checkudata(state, 1, "Texture");
 
     if (texturePtr)
@@ -94,7 +94,7 @@ namespace TextureTable {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-static const struct luaL_reg TextureClassDefinition[] = {
+const struct luaL_reg TextureTableDefinition[] = {
   {"Find", TextureTable::Find},
   {"GetWidth", TextureTable::GetWidth},
   {"GetHeight", TextureTable::GetHeight},
@@ -107,5 +107,5 @@ static const struct luaL_reg TextureClassDefinition[] = {
 void Hyperborean::Scripting::TextureBinding::Bind(
   Hyperborean::Scripting::Environment& context)
 {
-  context.AddClass("Texture", TextureClassDefinition);
+  context.AddClass("Texture", TextureTableDefinition);
 }

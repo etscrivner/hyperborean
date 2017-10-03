@@ -2,6 +2,7 @@
 #define HYPERBOREAN_ASSETS_STORE_INCLUDED_HPP
 
 #include "Assets/Asset.hpp"
+#include "Log.hpp"
 
 #include <map>
 #include <memory>

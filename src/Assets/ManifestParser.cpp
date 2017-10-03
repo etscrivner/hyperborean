@@ -16,7 +16,7 @@ TypeToManifestString = {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-Hyperborean::Assets::Store
+std::shared_ptr<Hyperborean::Assets::Store>
 Hyperborean::Assets::ManifestParser::FromFile(
   const std::string& pathToManifestFile)
 {
@@ -26,7 +26,8 @@ Hyperborean::Assets::ManifestParser::FromFile(
   manifest.LoadString(manifestFile.GetBuffer());
   manifest.Execute();
 
-  Hyperborean::Assets::Store result;
+  std::shared_ptr<Hyperborean::Assets::Store> result
+    = std::make_shared<Hyperborean::Assets::Store>();
 
   // Load the manifest table
   manifest.GetTable(ManifestTableName);
@@ -58,7 +59,7 @@ Hyperborean::Assets::ManifestParser::FromFile(
         std::string entryPath = pathEntry->second;
 
         // Add the newly loaded entry to our asset store.
-        result.Add(entryName, entryPath, entryType);
+        result->Add(entryName, entryPath, entryType);
       }
     }
     // Close the sub table we opened to clean up the stack.

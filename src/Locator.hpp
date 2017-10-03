@@ -11,6 +11,9 @@ namespace Hyperborean {
   class Locator
   {
   public:
+    ///////////////////////////////////////////////////////////////////////////
+    // TextureLoader
+
     static std::shared_ptr<Hyperborean::Graphics::TextureLoader>
     TextureLoader()
     {
@@ -29,7 +32,11 @@ namespace Hyperborean {
       textureLoader_ = loader;
     }
   private:
-    static std::shared_ptr<Hyperborean::Graphics::TextureLoader> textureLoader_;
+    ///////////////////////////////////////////////////////////////////////////
+    // Attributes
+
+    static std::shared_ptr<Hyperborean::Graphics::TextureLoader>
+      textureLoader_;
   };
 }
 
