@@ -1,36 +1,18 @@
-#include "Scripting/Environment.hpp"
 #include "Log.hpp"
 #include "OS/File.hpp"
 #include "OS/FileSystem.hpp"
+#include "Scripting/Environment.hpp"
+#include "Scripting/TextureBinding.hpp"
 
 #include <map>
 
 #include <fmt/format.h>
 
-static int hello(lua_State*) {
-  HBLOG_DEBUG("Hello from Lua");
-  return 0;
-}
-
-static const struct luaL_reg luaBinding [] = {
-  {"hello", hello},
-  {NULL, NULL}
-};
-
-static int loadmodule_Account(lua_State* state) {
-  const char* id = "Account";
-  luaL_register(state, id, luaBinding);
-  lua_pop(state, 1);
-  return 0;
-}
-
-///////////////////////////////////////////////////////////////////////////////
-
 Hyperborean::Scripting::Environment::Environment(const std::string& name)
   : _luaState(luaL_newstate()), _name(name)
 {
   luaL_openlibs(_luaState);
-  AddModule("Account", loadmodule_Account);
+  Hyperborean::Scripting::TextureBinding::Bind(*this);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -81,7 +63,7 @@ void Hyperborean::Scripting::Environment::Execute(
   }
 
   // Call the function on the top of the stack.
-  if (lua_pcall(_luaState, 0, LUA_MULTRET, 0) != 0) {
+  if (lua_pcall(_luaState, 0, 0, 0) != 0) {
     throw Hyperborean::Scripting::ExecutionError(GetErrorMessage());
   }
 }
@@ -123,6 +105,24 @@ const std::string Hyperborean::Scripting::Environment::GetErrorMessage()
   }
 
   return result;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+bool Hyperborean::Scripting::Environment::AddClass(
+  const std::string& className,
+  const luaL_Reg* luaBinding)
+{
+  const char* id = className.c_str();
+  lua_newtable(_luaState);
+  luaL_newmetatable(_luaState, id);
+  luaL_register(_luaState, NULL, luaBinding);
+  lua_pushliteral(_luaState, "__index");
+  lua_pushvalue(_luaState, -2);
+  lua_rawset(_luaState, -3);
+  lua_setglobal(_luaState, id);
+
+  return true;
 }
 
 ///////////////////////////////////////////////////////////////////////////////

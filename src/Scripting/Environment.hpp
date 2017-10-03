@@ -9,6 +9,21 @@
 
 #include "Errors.hpp"
 
+// Macro for generating the boilerplate code for a module loading function.
+//
+// Parameters:
+//   funcName - The name of the function
+//   moduleName - The name of the module being loaded
+//   moduleBinding - Array of structs mapping function names to function pointers.
+#define GENERATE_LOAD_MODULE_FUNCTION(funcName, moduleName, moduleBinding) \
+static int funcName(lua_State* state) { \
+  luaL_register(state, moduleName, moduleBinding); \
+  lua_pop(state, 1); \
+  return 0;          \
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
 namespace Hyperborean {
   namespace Scripting {
     ///////////////////////////////////////////////////////////////////////////
@@ -98,6 +113,19 @@ namespace Hyperborean {
       const std::string GetErrorMessage();
 
       /////////////////////////////////////////////////////////////////////////
+      // Adds a new metatable into the script execution environment with the
+      // given name and associated methods.
+      //
+      // Parameters:
+      //   className - The name to be given to the metatable.
+      //   luaBinding - Methods on the new metatable.
+      //
+      // Returns:
+      //   True if the class was added to the metatables, false otherwise.
+      bool AddClass(const std::string& className,
+                    const luaL_Reg* luaBinding);
+
+      /////////////////////////////////////////////////////////////////////////
       // Adds an importable module into the script execution environment with
       // the given name. The function provided is used by Lua to initialize
       // the module.
@@ -111,7 +139,7 @@ namespace Hyperborean {
       // From a Lua script we can then import and execute the module:
       //
       //    require("Account")
-      //    local account = Account:new()
+      //    local account = Account.new()
       //
       // Parameters:
       //   moduleName - The name to be given to the module in scripts.

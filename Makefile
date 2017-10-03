@@ -73,6 +73,7 @@ TAGS=.tags \
 
 HYPERBOREAN_MAIN=src/Main.o
 HYPERBOREAN_ROOT_FILES=src/Application.o \
+		       src/Locator.o \
 		       src/Log.o \
 		       src/Settings.o \
 		       src/SettingsParser.o
@@ -98,7 +99,8 @@ HYPERBOREAN_OS_FILES=src/OS.o \
 		     src/OS/File.o \
 		     src/OS/FileSystem.o
 
-HYPERBOREAN_SCRIPTING_FILES=src/Scripting/Environment.o
+HYPERBOREAN_SCRIPTING_FILES=src/Scripting/Environment.o \
+			    src/Scripting/TextureBinding.o
 
 HYPERBOREAN_TEST_FILES=tests/Main.o \
 	               tests/Unit/Scripting/TestEnvironment.o \

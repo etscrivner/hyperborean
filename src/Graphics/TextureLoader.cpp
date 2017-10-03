@@ -1,4 +1,6 @@
+#include "Errors.hpp"
 #include "Graphics.hpp"
+#include "Log.hpp"
 #include "OS/File.hpp"
 #include "OS/FileSystem.hpp"
 #include "TextureLoader.hpp"
@@ -6,6 +8,21 @@
 #include <fmt/format.h>
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
+
+std::shared_ptr<Hyperborean::Graphics::Texture>
+Hyperborean::Graphics::TextureLoader::Load(const std::string& pathToTexture)
+{
+  auto texture = textureCache_[pathToTexture].lock();
+
+  if (!texture)
+  {
+    texture = FromFile(pathToTexture);
+  }
+
+  return texture;
+}
+
+///////////////////////////////////////////////////////////////////////////////
 
 std::shared_ptr<Hyperborean::Graphics::Texture>
 Hyperborean::Graphics::TextureLoader::FromFile(

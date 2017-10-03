@@ -9,6 +9,7 @@
 #include "Graphics/Texture.hpp"
 #include "Graphics/TextureLoader.hpp"
 #include "Input.hpp"
+#include "Locator.hpp"
 #include "Log.hpp"
 #include "OS.hpp"
 #include "OS/File.hpp"
@@ -73,6 +74,9 @@ void Hyperborean::Application::InitializeSubsystems(
   Hyperborean::OS::Initialize(applicationName);
   Hyperborean::Graphics::Initialize();
   Hyperborean::Input::Initialize();
+
+  Hyperborean::Locator::SetTextureLoader(
+    std::make_shared<Hyperborean::Graphics::TextureLoader>());
 }
 
 ///////////////////////////////////////////////////////////////////////////////
