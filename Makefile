@@ -100,6 +100,7 @@ HYPERBOREAN_OS_FILES=src/OS.o \
 		     src/OS/FileSystem.o
 
 HYPERBOREAN_SCRIPTING_FILES=src/Scripting/Environment.o \
+			    src/Scripting/RendererBinding.o \
 			    src/Scripting/SpriteBinding.o \
 			    src/Scripting/TextureBinding.o
 

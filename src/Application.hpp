@@ -1,8 +1,10 @@
 #ifndef HYPERBOREAN_APPLICATION_HPP_INCLUDED
 #define HYPERBOREAN_APPLICATION_HPP_INCLUDED
 
+#include "Graphics/RenderWindow.hpp"
 #include "Scripting/Environment.hpp"
 
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -26,7 +28,8 @@ namespace Hyperborean {
     void ShutdownSubsystems();
 
     // Initialize all services
-    void InitializeServices();
+    void InitializeServices(
+      std::shared_ptr<Hyperborean::Graphics::RenderWindow> renderWindow);
 
     // Loads various Lua scripting bindings
     Hyperborean::Scripting::Environment& LoadScriptingBindings(

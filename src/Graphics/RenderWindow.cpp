@@ -1,4 +1,5 @@
 #include "Errors.hpp"
+#include "Log.hpp"
 #include "RenderWindow.hpp"
 
 #include <GLFW/glfw3.h>
@@ -34,7 +35,9 @@ Hyperborean::Graphics::RenderWindow::RenderWindow(
 
 Hyperborean::Graphics::RenderWindow::~RenderWindow()
 {
-  glfwDestroyWindow(windowData_->window);
+  // NOTE: We don't need to destroy window since termination will release
+  //   resources for us.
+  // glfwDestroyWindow(windowData_->window);
   windowData_->window = NULL;
 }
 

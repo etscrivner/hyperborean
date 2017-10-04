@@ -13,6 +13,7 @@
 #include "Log.hpp"
 #include "OS.hpp"
 #include "Scripting/Environment.hpp"
+#include "Scripting/RendererBinding.hpp"
 #include "Scripting/TextureBinding.hpp"
 #include "Scripting/SpriteBinding.hpp"
 #include "Settings.hpp"
@@ -27,7 +28,6 @@ int Hyperborean::Application::Execute(std::string applicationName,
   try {
     HBLOG_INFO("Starting %s", applicationName.c_str());
     InitializeSubsystems(applicationName);
-    InitializeServices();
 
     if (!arguments.empty())
     {
@@ -43,7 +43,7 @@ int Hyperborean::Application::Execute(std::string applicationName,
 
     auto renderWindow = std::make_shared<Hyperborean::Graphics::RenderWindow>(
       settings.title, settings.displayWidth, settings.displayHeight);
-    Hyperborean::Graphics::Renderer renderer(renderWindow);
+    InitializeServices(renderWindow);
 
     Hyperborean::Scripting::Environment environment("main");
     LoadScriptingBindings(environment);
@@ -53,9 +53,10 @@ int Hyperborean::Application::Execute(std::string applicationName,
 
     while (!Hyperborean::Input::TerminalEventReceived(*renderWindow))
     {
-      renderer.Clear(Hyperborean::Graphics::Color::kBlack);
+      auto renderer = Hyperborean::Locator::Renderer();
+      renderer->Clear(Hyperborean::Graphics::Color::kBlack);
       environment.Execute(settings.updateMethodName);
-      renderer.SwapBuffers();
+      renderer->SwapBuffers();
       Hyperborean::Input::WaitForEventsTimeout(0.0125);
     }
   } catch(Hyperborean::BaseError& error) {
@@ -91,8 +92,11 @@ void Hyperborean::Application::ShutdownSubsystems()
 
 ///////////////////////////////////////////////////////////////////////////////
 
-void Hyperborean::Application::InitializeServices()
+void Hyperborean::Application::InitializeServices(
+  std::shared_ptr<Hyperborean::Graphics::RenderWindow> renderWindow)
 {
+  Hyperborean::Locator::SetRenderer(
+    std::make_shared<Hyperborean::Graphics::Renderer>(renderWindow));
   Hyperborean::Locator::SetTextureLoader(
     std::make_shared<Hyperborean::Graphics::TextureLoader>());
 }
@@ -105,5 +109,6 @@ Hyperborean::Application::LoadScriptingBindings(
 {
   Hyperborean::Scripting::TextureBinding::Bind(environment);
   Hyperborean::Scripting::SpriteBinding::Bind(environment);
+  Hyperborean::Scripting::RendererBinding::Bind(environment);
   return environment;
 }
