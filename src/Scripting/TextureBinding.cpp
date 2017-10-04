@@ -1,6 +1,5 @@
 #include "Locator.hpp"
 #include "Log.hpp"
-#include "Scripting/Environment.hpp"
 #include "TextureBinding.hpp"
 
 #include <memory>
@@ -17,15 +16,14 @@ namespace TextureTable {
     auto texture = Hyperborean::Locator::TextureLoader()->Load(
        textureName);
     // Add texture object pointer to meta table
-    void* ud = lua_newuserdata(
+    void* userData = lua_newuserdata(
       state, sizeof(std::shared_ptr<Hyperborean::Graphics::Texture>));
 
-    if (!ud)
-    {
+    if (!userData) {
       return 0;
     }
 
-    new(ud) std::shared_ptr<Hyperborean::Graphics::Texture>(texture);
+    new(userData) std::shared_ptr<Hyperborean::Graphics::Texture>(texture);
 
     luaL_getmetatable(state, "Texture");
     lua_setmetatable(state, -2);
@@ -38,16 +36,12 @@ namespace TextureTable {
   int GetWidth(lua_State* state) {
     void* texturePtr = luaL_checkudata(state, 1, "Texture");
 
-    if (texturePtr)
-    {
+    if (texturePtr) {
       auto texture =
         static_cast<std::shared_ptr<Hyperborean::Graphics::Texture>*>(
           texturePtr);
-
       lua_pushnumber(state, (*texture)->Width());
-    }
-    else
-    {
+    } else {
       return luaL_typerror(state, 1, "Texture");
     }
 
@@ -80,8 +74,7 @@ namespace TextureTable {
   int Destroy(lua_State* state) {
     void* texturePtr = luaL_checkudata(state, 1, "Texture");
 
-    if (texturePtr)
-    {
+    if (texturePtr) {
       auto texture =
         static_cast<std::shared_ptr<Hyperborean::Graphics::Texture>*>(
           texturePtr);

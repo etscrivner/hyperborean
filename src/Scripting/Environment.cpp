@@ -12,7 +12,6 @@ Hyperborean::Scripting::Environment::Environment(const std::string& name)
   : _luaState(luaL_newstate()), _name(name)
 {
   luaL_openlibs(_luaState);
-  Hyperborean::Scripting::TextureBinding::Bind(*this);
 }
 
 ///////////////////////////////////////////////////////////////////////////////

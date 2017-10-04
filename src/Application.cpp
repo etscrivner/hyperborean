@@ -12,9 +12,9 @@
 #include "Locator.hpp"
 #include "Log.hpp"
 #include "OS.hpp"
-#include "OS/File.hpp"
-#include "OS/FileSystem.hpp"
 #include "Scripting/Environment.hpp"
+#include "Scripting/TextureBinding.hpp"
+#include "Scripting/SpriteBinding.hpp"
 #include "Settings.hpp"
 #include "SettingsParser.hpp"
 
@@ -46,6 +46,8 @@ int Hyperborean::Application::Execute(std::string applicationName,
     Hyperborean::Graphics::Renderer renderer(renderWindow);
 
     Hyperborean::Scripting::Environment environment("main");
+    LoadScriptingBindings(environment);
+
     environment.LoadFile(settings.mainScriptPath);
     environment.Execute();
 
@@ -93,4 +95,15 @@ void Hyperborean::Application::InitializeServices()
 {
   Hyperborean::Locator::SetTextureLoader(
     std::make_shared<Hyperborean::Graphics::TextureLoader>());
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+Hyperborean::Scripting::Environment&
+Hyperborean::Application::LoadScriptingBindings(
+  Hyperborean::Scripting::Environment& environment)
+{
+  Hyperborean::Scripting::TextureBinding::Bind(environment);
+  Hyperborean::Scripting::SpriteBinding::Bind(environment);
+  return environment;
 }

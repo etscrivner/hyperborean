@@ -1,6 +1,8 @@
 #ifndef HYPERBOREAN_APPLICATION_HPP_INCLUDED
 #define HYPERBOREAN_APPLICATION_HPP_INCLUDED
 
+#include "Scripting/Environment.hpp"
+
 #include <string>
 #include <vector>
 
@@ -25,6 +27,10 @@ namespace Hyperborean {
 
     // Initialize all services
     void InitializeServices();
+
+    // Loads various Lua scripting bindings
+    Hyperborean::Scripting::Environment& LoadScriptingBindings(
+      Hyperborean::Scripting::Environment& environment);
   };
 }
 
